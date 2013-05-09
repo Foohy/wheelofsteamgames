@@ -1,0 +1,6 @@
+{
+	'Shader'				: 'default_lighting',
+	'Basetexture'			: 'engine/white.png',
+	'SpecPower'				: '32.0',
+	'SpecIntensity' 		: '4.0',
+}
