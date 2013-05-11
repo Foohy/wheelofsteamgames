@@ -51,6 +51,11 @@ namespace WheelOfSteamGames.Entity
         Text CurrentGameText;
         const float RAD2DEG = 180f / (float)Math.PI;
 
+        //Info for the basetexture so we can overlay new info on it
+        private int Diameter = 815; //848;
+        private Vector2 Center = new Vector2(518, 597);
+        const int TextureScale = 2;
+
         public override void Init()
         {
             this.SetModel(Resource.GetMesh("spinner_base.obj"));
@@ -67,6 +72,9 @@ namespace WheelOfSteamGames.Entity
             Audio.Precache("Resources/Audio/spinner_click.wav");
             CurrentGameText = new Text("game_large", "NONE");
             GUIManager.PostDrawHUD += new GUIManager.OnDrawHUD(GUIManager_PostDrawHUD);
+
+            Diameter *= TextureScale;
+            Center *= TextureScale;
         }
 
         void GUIManager_PostDrawHUD(EventArgs e)
@@ -89,9 +97,112 @@ namespace WheelOfSteamGames.Entity
         public void CreateElements( List<Game> games )
         {
             this.Games = games;
+            this.ElementSizeRadians = (float)(Math.PI * 2) / Games.Count;
+
+            //Create the texture
+            System.Drawing.Bitmap bm = new System.Drawing.Bitmap(Diameter, Diameter);
+            System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bm);
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            g.FillEllipse(System.Drawing.Brushes.Black, 0, 0, Diameter, Diameter);
+
+            System.Drawing.Font font = new System.Drawing.Font("Arial", 25);
+            int WheelCenter = Diameter / 2;
+            float WheelAngleOffset = ElementSizeRadians / 2 - (float)Math.PI / 2 - ElementSizeRadians;
+
+            for (int i = 0; i < Games.Count; i++)
+            {
+                int x = (int)(Math.Cos(i * ElementSizeRadians + WheelAngleOffset) * WheelCenter) + WheelCenter;
+                int y = (int)(Math.Sin(i * ElementSizeRadians + WheelAngleOffset) * WheelCenter) + WheelCenter;
+
+                int xNext = (int)(Math.Cos((i + 1) * ElementSizeRadians + WheelAngleOffset) * WheelCenter) + WheelCenter;
+                int yNext = (int)(Math.Sin((i + 1) * ElementSizeRadians + WheelAngleOffset) * WheelCenter) + WheelCenter;
+
+                int xMid = (int)(Math.Cos((i + 0.5) * ElementSizeRadians + WheelAngleOffset) * WheelCenter) + WheelCenter;
+                int yMid = (int)(Math.Sin((i + 0.5) * ElementSizeRadians + WheelAngleOffset) * WheelCenter) + WheelCenter;
+
+                System.Drawing.Drawing2D.GraphicsPath gp = new System.Drawing.Drawing2D.GraphicsPath( System.Drawing.Drawing2D.FillMode.Winding);
+                System.Drawing.Point[] Points = new System.Drawing.Point[]
+                {
+                    new System.Drawing.Point(WheelCenter, WheelCenter),
+                    new System.Drawing.Point(x, y),
+                    new System.Drawing.Point(xMid, yMid),
+                    new System.Drawing.Point(xNext, yNext),
+                };
+
+                System.Drawing.Point[] CurvePoints = new System.Drawing.Point[]
+                {
+                    new System.Drawing.Point(x, y),
+                    new System.Drawing.Point(xMid, yMid),
+                    new System.Drawing.Point(xNext, yNext),
+                };
+
+                gp.AddPolygon(Points);
+
+                float StartAngle = (i * ElementSizeRadians + WheelAngleOffset) * RAD2DEG;
+                float EndAngle = ((i + 1) * ElementSizeRadians + WheelAngleOffset) * RAD2DEG;
+                gp.AddArc(0, 0, Diameter, Diameter, StartAngle + 360, Math.Abs(StartAngle - EndAngle));
+                gp.CloseAllFigures();
+
+                System.Drawing.Region rgn = new System.Drawing.Region( gp );
+                System.Drawing.Brush b = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(Utilities.Rand.Next( 0, 255 ), Utilities.Rand.Next( 0, 255 ),Utilities.Rand.Next( 0, 255 )));
+                g.FillRegion(b, rgn);
+
+
+                float TextAngle = ((i + 0.5f) * ElementSizeRadians + WheelAngleOffset);
+                g.TranslateTransform(WheelCenter, WheelCenter);
+                g.RotateTransform(TextAngle * RAD2DEG);
+                g.DrawString(Games[i].Name, font, System.Drawing.Brushes.Black, new System.Drawing.PointF( 130 * TextureScale, -font.Size/2));
+                g.RotateTransform(-TextAngle * RAD2DEG);
+                g.TranslateTransform(-WheelCenter, -WheelCenter);
+            }
+
+            for (int i = 0; i < Games.Count; i++)
+            {
+                int x = (int)(Math.Cos(i * ElementSizeRadians + WheelAngleOffset) * WheelCenter) + WheelCenter;
+                int y = (int)(Math.Sin(i * ElementSizeRadians + WheelAngleOffset) * WheelCenter) + WheelCenter;
+                g.DrawLine(new System.Drawing.Pen(System.Drawing.Color.FromArgb(32, 32, 32), 4), WheelCenter, WheelCenter, x, y);
+            }
+
+            g.Flush(System.Drawing.Drawing2D.FlushIntention.Sync);
+
+            System.Drawing.Bitmap underlay = new System.Drawing.Bitmap("Resources/Materials/models/spinner_wheel.png");
+            underlay = ResizeImage(underlay, underlay.Width * TextureScale, underlay.Height * TextureScale);
+
+            if (underlay != null)
+            {
+                System.Drawing.Graphics gU = System.Drawing.Graphics.FromImage(underlay);
+                gU.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+
+                int x = (int)Center.X - (Diameter / 2);
+                int y = (int)Center.Y - (Diameter / 2);
+                gU.DrawImage( bm, new System.Drawing.Point(x, y));
+                gU.Flush(System.Drawing.Drawing2D.FlushIntention.Sync);
+            }
+
+            int tex = Utilities.LoadTexture(underlay);
+            this.Wheel.mat.Properties.BaseTexture = tex;
+        }
+        public static System.Drawing.Bitmap ResizeImage(System.Drawing.Bitmap imgToResize, int width, int height)
+        {
+            try
+            {
+                System.Drawing.Bitmap b = new System.Drawing.Bitmap(width, width);
+                using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(b))
+                {
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+
+                    g.DrawImage(imgToResize, 0, 0, width, width);
+                }
+
+                return b;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-        public void Spin( float force )
+        public void Spin(float force)
         {
             if (this.IsSpinning || this.Games == null) return;
 
@@ -100,7 +211,6 @@ namespace WheelOfSteamGames.Entity
             SpinupForce = force;
 
             this.IsSpinning = true;
-            this.ElementSizeRadians = (float)(Math.PI * 2) / Games.Count;
             this.SpeedupTime = (float)Utilities.Rand.NextDouble(0.7, 1.3);
         }
 

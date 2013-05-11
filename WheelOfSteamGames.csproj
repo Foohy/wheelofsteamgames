@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WheelOfSteamGames</RootNamespace>
     <AssemblyName>WheelOfSteamGames</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -37,8 +38,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Two and a Half Dimensions\OpenTK.dll</HintPath>
     </Reference>
+    <Reference Include="Steam4NET">
+      <HintPath>.\Steam4NET.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -51,12 +56,16 @@
     <Compile Include="MainRoom.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Steam.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Two and a Half Dimensions\OlegEngine.csproj">
       <Project>{78402D63-5943-49C3-9DA8-D957BE2E96A6}</Project>
       <Name>OlegEngine</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

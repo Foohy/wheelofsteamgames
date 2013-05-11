@@ -39,7 +39,7 @@ namespace WheelOfSteamGames
             Utilities.window.Keyboard.KeyDown += new EventHandler<OpenTK.Input.KeyboardKeyEventArgs>(Keyboard_KeyDown);
 
             //TODO: make this load actual game data
-
+            /*
             List<ent_spinner.Game> Games = new List<ent_spinner.Game>()
             {
                 new ent_spinner.Game( "Absolutely nothing"),
@@ -59,6 +59,21 @@ namespace WheelOfSteamGames
                 new ent_spinner.Game( "A date with Foohy"),
                 new ent_spinner.Game( "Free T-shirt"),
             };
+            */
+
+            Steam.Initialize();
+            List<ent_spinner.Game> Games = new List<ent_spinner.Game>()
+            {
+                new ent_spinner.Game( "Nothing at all"),
+                new ent_spinner.Game( "Buy more games"),
+                new ent_spinner.Game( "Honestly"),
+                new ent_spinner.Game( "Take the hint"),
+            };
+
+            for (int i = 0; i < 25; i++ )
+            {
+                Games.Add(new ent_spinner.Game(Utilities.Rand.Next(0, 1000).ToString()));
+            }
 
             Spinner.CreateElements(Games);
         }
