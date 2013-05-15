@@ -82,7 +82,6 @@ namespace WheelOfSteamGames.Entity
             }
             CamAngle = new Vector2d((float)CamAngle.X, Utilities.Clamp((float)CamAngle.Y, 1.0f, -1.0f)); //Clamp it because I can't math correctly
 
-            Input.LockMouse = true;
             this.SetPos(NewPos, false);
             this.SetAngle(new Vector3((float)CamAngle.X, (float)CamAngle.Y, 0));
 

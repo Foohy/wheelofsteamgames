@@ -13,28 +13,15 @@ namespace WheelOfSteamGames.Entity
 {
     class ent_spinner : BaseEntity
     {
-        public struct Game
+        System.Drawing.Color[] PanelColors = new System.Drawing.Color[]
         {
-            public string Name;
-            public int AppID;
-            public string Image;
+            System.Drawing.Color.FromArgb(187, 53, 46),
+            System.Drawing.Color.FromArgb(61, 137, 18),
+            System.Drawing.Color.FromArgb(58, 79, 192),
+            System.Drawing.Color.FromArgb(187, 137, 46),
+        };
 
-            public Game( string name, int id, string image)
-            {
-                Name = name;
-                AppID = id;
-                Image = image;
-            }
-
-            public Game(string name )
-            {
-                Name = name;
-                AppID = 0;
-                Image = "none";
-            }
-        }
-
-        public List<Game> Games;
+        public List<SteamCommunity.Game> Games;
         public float SpinFriction = 0.0083f;
         public float CurrentSpeed { get; private set; }
         public float CurrentAngle { get; private set; }
@@ -94,7 +81,7 @@ namespace WheelOfSteamGames.Entity
             CurrentGameText.Draw();
         }
 
-        public void CreateElements( List<Game> games )
+        public void CreateElements( List<SteamCommunity.Game> games )
         {
             this.Games = games;
             this.ElementSizeRadians = (float)(Math.PI * 2) / Games.Count;
@@ -144,7 +131,8 @@ namespace WheelOfSteamGames.Entity
                 gp.CloseAllFigures();
 
                 System.Drawing.Region rgn = new System.Drawing.Region( gp );
-                System.Drawing.Brush b = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(Utilities.Rand.Next( 0, 255 ), Utilities.Rand.Next( 0, 255 ),Utilities.Rand.Next( 0, 255 )));
+                System.Drawing.Brush b = new System.Drawing.SolidBrush( PanelColors[i%PanelColors.Length] );
+                //System.Drawing.Brush b = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(Utilities.Rand.Next( 0, 255 ), Utilities.Rand.Next( 0, 255 ),Utilities.Rand.Next( 0, 255 )));
                 g.FillRegion(b, rgn);
 
 
@@ -225,10 +213,11 @@ namespace WheelOfSteamGames.Entity
             Wheel.Position = this.Position;
             Wheel.Angle = this.Angle + new Vector3(this.CurrentAngle, 0, 0);
 
+            if (Games == null) return;
+
             Paddle.Position = this.Position + PaddlePositionOffset;
             Paddle.Angle = new Vector3(this.Angle.X + GetPaddleTurn(this.CurrentAngle), this.Angle.Y, this.Angle.Z);
 
-            if (Games == null) return;
             //Spin if neccessary
             if (Utilities.Time < SpeedTime + SpeedupTime)
             {

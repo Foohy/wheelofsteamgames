@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
 
 //Graphical stuff
 using OpenTK;
@@ -23,6 +24,10 @@ namespace WheelOfSteamGames
         public static bool Started = false;
 
         private static float StartupDelay = 0.0f;
+        private static GUI.PauseMenu Menu;
+        public delegate bool ReturnCriteria(SteamCommunity.Game game);
+        private static BackgroundWorker worker;
+        private static List<SteamCommunity.Game> AllGames = new List<SteamCommunity.Game>(); //Keep a  list of ALL steam games handy. Do not edit this list
 
         public static void Initialize()
         {
@@ -37,6 +42,26 @@ namespace WheelOfSteamGames
             SetUpScene();
 
             Utilities.window.Keyboard.KeyDown += new EventHandler<OpenTK.Input.KeyboardKeyEventArgs>(Keyboard_KeyDown);
+
+            //Set the sync context to point to this (main) thread
+            System.Threading.SynchronizationContext.SetSynchronizationContext(System.Threading.SynchronizationContext.Current);
+            System.Threading.Thread.CurrentThread.SetApartmentState(System.Threading.ApartmentState.STA);
+            System.Threading.Thread.CurrentThread.IsBackground = true;
+
+            //Create a background worker to load steam data
+            worker = new BackgroundWorker();
+            worker.DoWork += new DoWorkEventHandler(AsyncBeginLoad);
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(AsyncEndLoad);
+
+            //GIMME THE DATA
+            //BeginLoadData();
+
+            //FUCKTHREADS
+            AllGames = SteamCommunity.GetGamesFromCommunity("foohy");
+            var FilteredGames = GetFilteredGamesList();
+            Spinner.CreateElements(FilteredGames);
+            StartupDelay = (float)Utilities.Time + 1.5f;
+
 
             //TODO: make this load actual game data
             /*
@@ -59,24 +84,48 @@ namespace WheelOfSteamGames
                 new ent_spinner.Game( "A date with Foohy"),
                 new ent_spinner.Game( "Free T-shirt"),
             };
-            */
+             * */
+        }
 
-            Steam.Initialize();
-            List<ent_spinner.Game> Games = new List<ent_spinner.Game>()
-            {
-                new ent_spinner.Game( "Nothing at all"),
-                new ent_spinner.Game( "Buy more games"),
-                new ent_spinner.Game( "Honestly"),
-                new ent_spinner.Game( "Take the hint"),
-            };
+        public static void BeginLoadData()
+        {
+            if (!worker.IsBusy)
+                worker.RunWorkerAsync();
+        }
 
-            for (int i = 0; i < 25; i++ )
+        private static void AsyncBeginLoad(object sender, DoWorkEventArgs e)
+        {
+            var Games = SteamCommunity.GetGamesFromCommunity("foohy");
+            // Steam.Initialize();
+            e.Result = (object)Games;
+        }
+
+        private static void AsyncEndLoad(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Error == null && !e.Cancelled)
             {
-                Games.Add(new ent_spinner.Game(Utilities.Rand.Next(0, 1000).ToString()));
+                EndLoad end = new EndLoad(AsyncEndLoad);
+                end.Invoke((List<SteamCommunity.Game>)e.Result);
             }
 
-            Spinner.CreateElements(Games);
         }
+
+        private static void AsyncEndLoad(List<SteamCommunity.Game> Games)
+        {
+            //Store the list of games
+            AllGames = Games;
+
+            //Create the spinner elements
+            var FilteredGames = GetFilteredGamesList();
+            Spinner.CreateElements(FilteredGames);
+
+            //If we're just starting up, tell the lights to turn on
+            StartupDelay = (float)Utilities.Time + 1.5f;
+        }
+
+
+
+        public delegate void EndLoad(List<SteamCommunity.Game> Games);
 
         static void Keyboard_KeyDown(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
         {
@@ -84,6 +133,33 @@ namespace WheelOfSteamGames
             {
                 Spinner.Spin(0.095f);
                 HintManager.RemoveHintNice("spin_controls_hint");
+            }
+
+            if (e.Key == OpenTK.Input.Key.F1)
+            {
+                Steam.App[] apps = Steam.RefreshGames();
+                if (apps != null && apps.Length > 0)
+                {
+                    foreach (Steam.App app in apps)
+                    {
+                        Console.WriteLine(app.Name);
+                    }
+                }
+                else Console.WriteLine("Failed to get steam game list!");
+            }
+
+            if (e.Key == OpenTK.Input.Key.Escape)
+            {
+                if (Menu.IsShown)
+                {
+                    Menu.HideToLeft();
+                    Input.LockMouse = true;
+                }
+                else
+                {
+                    Menu.ShowToLeft();
+                    Input.LockMouse = false;
+                }
             }
         }
 
@@ -130,13 +206,74 @@ namespace WheelOfSteamGames
             //Pos: -13.50925f, 5.614059f, 2.610255
             //Ang: 0.9982005f, -0.03713433f, 0.05996396f
 
-
-            //Delay before we turn on the lights for effect
-            StartupDelay = (float)Utilities.Time + 1.5f;
-
             //Create some hint text
             HintManager.Initialize();
-            HintManager.AddHint("Press space to spin!", 2.0f, 5.0f, "spin_controls_hint");
+
+            //Create a panel holding filter options
+            Menu = GUIManager.Create<GUI.PauseMenu>();
+            Menu.SetWidth(220);
+            Menu.SetHeight(400);
+            Menu.SetTitle("Filters");
+            Menu.AddCheckBox("Show Singleplayer Games", "game_single");
+            Menu.AddCheckBox("Show Multiplayer Games", "game_multi");
+            Menu.AddCheckBox("Show Games with VAC", "game_vac");
+            Menu.AddCheckBox("Show Favorites only", "game_favorites");
+            Menu.AddCheckBox("Show Games with HDR", "game_hdr");
+            Menu.AddCheckBox("Show Recently played games", "game_2weeks");
+
+            Menu.OnAcceptPress += new Action(Menu_OnAcceptPress);
+        }
+
+        static List<SteamCommunity.Game> GetFilteredGames(ReturnCriteria rc)
+        {
+            List<SteamCommunity.Game> FilteredGames = new List<SteamCommunity.Game>();
+            foreach (SteamCommunity.Game game in AllGames)
+            {
+                //if (!Steam.IsAppSubscribed( (uint)game.AppID ))
+                //    continue;
+
+                if (!rc(game))
+                    continue;
+
+                FilteredGames.Add(game);
+            }
+
+            return FilteredGames;
+        }
+
+        public static List<SteamCommunity.Game> GetFilteredGamesList()
+        {
+            //Save settings?
+            List<SteamCommunity.Game> FilteredGames = GetFilteredGames((game) =>
+            {
+                if (Menu.GetCheckboxChecked("game_single") && !game.IsSingleplayer)
+                    return false;
+
+                if (Menu.GetCheckboxChecked("game_multi") && !game.IsMultiplayer)
+                    return false;
+
+                if (Menu.GetCheckboxChecked("game_vac") && !game.HasVAC)
+                    return false;
+
+                if (Menu.GetCheckboxChecked("game_hdr") && !game.HasHDR)
+                    return false;
+
+                if (Menu.GetCheckboxChecked("game_2weeks") && game.HoursLast2Weeks <= 0)
+                    return false;
+
+                return true;
+
+            });
+
+            return FilteredGames;
+        }
+
+        static void Menu_OnAcceptPress()
+        {
+            Menu.HideToLeft();
+
+            var FilteredGames = GetFilteredGamesList();
+            Spinner.CreateElements(FilteredGames);
         }
 
         public static void Think()
@@ -150,8 +287,9 @@ namespace WheelOfSteamGames
                 spotlight.SetPos(View.Player.Position);
             }
 
-            if (Utilities.Time > StartupDelay && !Started)
+            if (Utilities.Time > StartupDelay && !Started && !worker.IsBusy)
             {
+                HintManager.AddHint("Press space to spin!", 2.0f, 5.0f, "spin_controls_hint");
                 Started = true;
                 spotlight.Enabled = true;
                 Audio.PlaySound("Resources/Audio/light_on.wav");

@@ -49,13 +49,6 @@ namespace WheelOfSteamGames
             }
 
             CallbackDispatcher.SpawnDispatchThread(HSteamPipe);
-            uint[] ids;
-            GetAppIds(out ids);
-
-            foreach (uint id in ids)
-            {
-                Console.WriteLine(id);
-            }
         }
 
         public static string GetAppData(uint appId, string key)
@@ -173,10 +166,10 @@ namespace WheelOfSteamGames
             return appList.ToArray();
         }
 
-        public void RefreshGames()
+        public static App[] RefreshGames()
         {
 
-            Steam.App[] apps = Steam.GetSubscribedApps((app) =>
+            App[] apps = Steam.GetSubscribedApps((app) =>
                 {
 
                     // hide anything that isn't an installable game
@@ -208,6 +201,8 @@ namespace WheelOfSteamGames
                     return true;
 
                 });
+
+            return apps;
         }
 
         static void InitSteam2()
@@ -265,7 +260,6 @@ namespace WheelOfSteamGames
                 throw new InvalidOperationException("Unable to startup steam interface.");
 
             Console.WriteLine("Account = \"{0}\"", accName.ToString());
-
 
             TSteamError error = new TSteamError();
 

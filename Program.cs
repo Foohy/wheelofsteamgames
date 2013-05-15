@@ -55,7 +55,7 @@ namespace WheelOfSteamGames
             engine.OnUpdateFrame(e);
             MainRoom.Think();
 
-            if (this.Keyboard[Key.Escape]) this.Exit();
+            //if (this.Keyboard[Key.Escape]) this.Exit();
         }
 
         /// <summary>
