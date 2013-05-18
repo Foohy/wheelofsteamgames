@@ -16,7 +16,7 @@ namespace WheelOfSteamGames
     {
         public Engine engine;
         public Program()
-            : base(1350, 680, new GraphicsMode(32, 24, 0, 4), "Wheel of Steam Games", GameWindowFlags.Default)
+            : base(1350, 680, new GraphicsMode(32, 24, 0, 4), "Wheel of Vidya Games", GameWindowFlags.Default)
         {
             VSync = VSyncMode.Adaptive;
             engine = new Engine(this); //Create the engine class that'll do all the heavy lifting
