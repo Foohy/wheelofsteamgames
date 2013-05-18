@@ -253,7 +253,7 @@ namespace WheelOfSteamGames
             Actor.Spawn();
             Actor.LoadAnimations("test");
             Actor.SetAnimation("animtest");
-            Actor.SetAngle(new Vector3(0, -180, 0));
+            Actor.SetAngle(new Vector3(0, -180, 00));
             Actor.Scale = new Vector3(10, 10, 10);
             Actor.SetPos(new Vector3(1, -2.5f, 6));
             Actor.ShouldDraw = false;
