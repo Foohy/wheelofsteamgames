@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.Xml;
+using System.IO;
 
 using Newtonsoft.Json;
 namespace WheelOfSteamGames
@@ -29,15 +30,13 @@ namespace WheelOfSteamGames
             public bool HasHDR;
         }
 
-        public static string SteamURL = "http://steamcommunity.com/id/{0}/games?tab=all&xml=1";
-        public static string StoreURL = "http://store.steampowered.com/api/appdetails/?appids={0}";
+        public const string SteamURL = "http://steamcommunity.com/id/{0}/games?tab=all&xml=1";
+        public const string StoreURL = "http://store.steampowered.com/api/appdetails/?appids={0}";
+        public const string SavesFolder = "Saves/";
+
         public static string CommunityID { get; private set; }
         public static string SteamName { get; private set; }
         public static List<Game> Games = new List<Game>();
-        public static void Initialize()
-        {
-
-        }
 
         public static bool IsValidName(string communityName, out string reason )
         {
@@ -62,6 +61,11 @@ namespace WheelOfSteamGames
                                     reader.Read();
                                     reason = reader.Value;
                                     valid = false;
+                                    break;
+
+                                case "steamID64":
+                                    reader.Read();
+                                    CommunityID = reader.Value;
                                     break;
                             }
                         }
@@ -114,17 +118,38 @@ namespace WheelOfSteamGames
                 GetAdditionalInfo(g);
             }
 
+            SaveGames(Games);
+
             return Games;
+        }
+
+        public static List<Game> GetGames(string communityname, string communityid)
+        {
+            if (File.Exists(SavesFolder + communityid))
+            {
+                Console.WriteLine("Loading data from file!");
+                string json = File.ReadAllText(SavesFolder + communityid);
+                return JsonConvert.DeserializeObject<List<Game>>(json);
+            }
+            else
+            {
+                Console.WriteLine("Loading data from internet!");
+                return GetGamesFromCommunity(communityname);
+            }
+        }
+
+        private static void SaveGames( List<Game> Games)
+        {
+            string json = JsonConvert.SerializeObject(Games);
+
+            if (!Directory.Exists(SavesFolder)) Directory.CreateDirectory(SavesFolder);
+            File.WriteAllText(SavesFolder + CommunityID, json);
         }
 
         private static void ParsegamesList(XmlReader reader)
         {
             Game CurrentGame = new Game();
             bool First = true;
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("TODO: STORE THE HELL OUT OF THIS INFO BECAUSE IT TAKES FOREVER AND A HALF");
-            Console.WriteLine("ALSO DO SOME GUI MAGIC FOR SELECTING USER BECAUSE THAT SHIT ISN'T AUTOMATIC YET");
-            Console.ResetColor();
             while (reader.Read())
             {
                 if (!reader.IsStartElement()) continue;
@@ -240,7 +265,7 @@ namespace WheelOfSteamGames
                         }
                     }
                 }
-                Console.WriteLine("{0}\n\tSingleplayer: {1}\n\tMultiplayer: {2}\n\tRequired age: {3}", dataObj["name"], game.IsMultiplayer, game.IsSingleplayer, dataObj["required_age"]);
+                Console.WriteLine( dataObj["name"]);
             }
         }
     }

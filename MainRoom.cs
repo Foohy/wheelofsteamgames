@@ -138,12 +138,12 @@ namespace WheelOfSteamGames
             });
         }
 
-        delegate List<SteamCommunity.Game> LoadSteamDataDel( string communityName );
+        delegate List<SteamCommunity.Game> LoadSteamDataDel( string communityName, string communityID );
         public static void BeginLoadData( string CommunityName )
         {
             IsLoadingData = true;
-            LoadSteamDataDel loadFunc = new LoadSteamDataDel(SteamCommunity.GetGamesFromCommunity);
-            IAsyncResult item = loadFunc.BeginInvoke(CommunityName, null, null );
+            LoadSteamDataDel loadFunc = new LoadSteamDataDel(SteamCommunity.GetGames);
+            IAsyncResult item = loadFunc.BeginInvoke(CommunityName, SteamCommunity.CommunityID, null, null );
 
             TaskManager.AddTask(item, (IAsyncResult res) =>
                 {
@@ -240,7 +240,7 @@ namespace WheelOfSteamGames
             Spinner = EntManager.Create<ent_spinner>();
             Spinner.Spawn();
             Spinner.SetAngle(new Vector3(0, 180, 0));
-            Spinner.SetPos(new Vector3(220, -(float)Spinner.Model.BBox.Negative.Y, 0));
+            Spinner.SetPos(new Vector3(0, -(float)Spinner.Model.BBox.Negative.Y, 0));
 
             View.Player.SetPos(new Vector3(-13.50925f, 5.614059f, 2.610255f));
             View.Player.SetAngle(new Vector3(0.9982005f, -0.03713433f, 0.05996396f));
@@ -253,9 +253,10 @@ namespace WheelOfSteamGames
             Actor.Spawn();
             Actor.LoadAnimations("test");
             Actor.SetAnimation("animtest");
-            Actor.SetAngle(new Vector3(0, -180, (float)Math.PI));
+            Actor.SetAngle(new Vector3(0, -180, 0));
             Actor.Scale = new Vector3(10, 10, 10);
-            Actor.SetPos(new Vector3(-5, 10, -5));
+            Actor.SetPos(new Vector3(1, -2.5f, 6));
+            Actor.ShouldDraw = false;
 
             //Create some hint text
             HintManager.Initialize();
@@ -352,7 +353,7 @@ namespace WheelOfSteamGames
                 spotlight.Enabled = true;
                 Audio.PlaySound("Resources/Audio/light_on.wav");
                 ShadowTechnique.Enabled = true;
-                Menu.ShowToLeft();
+                Actor.ShouldDraw = true;
             }
         }
 
