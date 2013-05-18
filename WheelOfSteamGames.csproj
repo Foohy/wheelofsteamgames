@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entity\base_actor.cs" />
     <Compile Include="Entity\ent_camera.cs" />
     <Compile Include="Entity\ent_spinner.cs" />
     <Compile Include="GUI\PauseMenu.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steam.cs" />
     <Compile Include="SteamCommunity.cs" />
+    <Compile Include="TaskManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Two and a Half Dimensions\OlegEngine.csproj">

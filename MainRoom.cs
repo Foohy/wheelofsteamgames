@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.ComponentModel;
+using System.Threading;
 
 //Graphical stuff
 using OpenTK;
@@ -22,12 +22,17 @@ namespace WheelOfSteamGames
         public static ent_spotlight spotlight;
         public static ent_spinner Spinner;
         public static bool Started = false;
+        public static bool Loaded = false;
+        public static bool IsLoadingData = false;
 
         private static float StartupDelay = 0.0f;
         private static GUI.PauseMenu Menu;
         public delegate bool ReturnCriteria(SteamCommunity.Game game);
-        private static BackgroundWorker worker;
         private static List<SteamCommunity.Game> AllGames = new List<SteamCommunity.Game>(); //Keep a  list of ALL steam games handy. Do not edit this list
+
+        private static Material LoadingMat;
+        private static Text LoadingText;
+        private static base_actor Actor;
 
         public static void Initialize()
         {
@@ -42,90 +47,127 @@ namespace WheelOfSteamGames
             SetUpScene();
 
             Utilities.window.Keyboard.KeyDown += new EventHandler<OpenTK.Input.KeyboardKeyEventArgs>(Keyboard_KeyDown);
+            GUIManager.PostDrawHUD += new GUIManager.OnDrawHUD(GUIManager_PostDrawHUD);
 
-            //Set the sync context to point to this (main) thread
-            System.Threading.SynchronizationContext.SetSynchronizationContext(System.Threading.SynchronizationContext.Current);
-            System.Threading.Thread.CurrentThread.SetApartmentState(System.Threading.ApartmentState.STA);
-            System.Threading.Thread.CurrentThread.IsBackground = true;
+            //On startup, ask for steam community username
+            Window msgBox = GUIManager.Create<Window>();
+            msgBox.SetTitle("Enter Username");
+            msgBox.Resizable = false;
+            msgBox.SetWidth(260);
+            msgBox.SetHeight(115);
+            msgBox.SetEnableCloseButton(false);
+            msgBox.SetPos(Utilities.window.Width / 2 - msgBox.Width / 2, Utilities.window.Height / 2 - msgBox.Height / 2);
 
-            //Create a background worker to load steam data
-            worker = new BackgroundWorker();
-            worker.DoWork += new DoWorkEventHandler(AsyncBeginLoad);
-            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(AsyncEndLoad);
+            Label questionText = GUIManager.Create<Label>(msgBox);
+            questionText.Autosize = true;
+            questionText.SetText("Please enter your steam community name");
+            questionText.SetPos(15, 10);
 
-            //GIMME THE DATA
-            //BeginLoadData();
+            TextInput input = GUIManager.Create<TextInput>(msgBox);
+            input.SetAnchorStyle(Panel.Anchors.Left | Panel.Anchors.Top | Panel.Anchors.Right);
+            input.SetPos(new Vector2(20, 30));
+            input.SetWidth(msgBox.Width - 40);
+            input.Name = "community_input";
 
-            //FUCKTHREADS
-            AllGames = SteamCommunity.GetGamesFromCommunity("foohy");
-            var FilteredGames = GetFilteredGamesList();
-            Spinner.CreateElements(FilteredGames);
-            StartupDelay = (float)Utilities.Time + 1.5f;
+            Button acceptBtn = GUIManager.Create<Button>(msgBox);
+            acceptBtn.SetText("Go");
+            acceptBtn.SizeToText(15);
+            acceptBtn.DockPadding(40, 40, 20, 20);
+            acceptBtn.SetHeight(20);
+            acceptBtn.Dock(Panel.DockStyle.BOTTOM);
+            acceptBtn.OnButtonPress += new Button.OnButtonPressDel(acceptBtn_OnButtonPress);
 
+            Label progressText = GUIManager.Create<Label>(msgBox);
+            progressText.SetWidth(msgBox.Width);
+            progressText.Below(input, 4);
+            progressText.SetAlignment(Label.TextAlign.TopCenter);
+            progressText.SetAnchorStyle(Panel.Anchors.Left | Panel.Anchors.Top | Panel.Anchors.Right);
+            progressText.SetColor(255, 0, 0);
+            progressText.Name = "progress_text";
 
-            //TODO: make this load actual game data
-            /*
-            List<ent_spinner.Game> Games = new List<ent_spinner.Game>()
+        }
+
+        private const float LoadingSize = 30f;
+        private const float LoadingOffset = 30f;
+        static void GUIManager_PostDrawHUD(EventArgs e)
+        {
+            if (LoadingMat == null) { LoadingMat = Resource.GetMaterial("gui/loading"); }
+            if (LoadingText == null) { LoadingText = new Text("game_large", "Loading data..."); LoadingText.SetScale(0.25f, 0.25f); }
+
+            if (IsLoadingData)
             {
-                new ent_spinner.Game( "Absolutely nothing"),
-                new ent_spinner.Game( "Mac's used tissues"),
-                new ent_spinner.Game( "1000 GMC"),
-                new ent_spinner.Game( "Visit Mac in Redmond Washington"),
-                new ent_spinner.Game( "Free Donor"),
-                new ent_spinner.Game( "1,000,000 GMC"),
-                new ent_spinner.Game( "Become friends with admin"),
-                new ent_spinner.Game( "Easter leftovers"),
-                new ent_spinner.Game( "Custom model"),
-                new ent_spinner.Game( "$0.70 USD"),
-                new ent_spinner.Game( "100,000 GMC"),
-                new ent_spinner.Game( "Free admin"),
-                new ent_spinner.Game( "100,000 catsacks"),
-                new ent_spinner.Game( "10,000 GMC"),
-                new ent_spinner.Game( "A date with Foohy"),
-                new ent_spinner.Game( "Free T-shirt"),
-            };
-             * */
-        }
-
-        public static void BeginLoadData()
-        {
-            if (!worker.IsBusy)
-                worker.RunWorkerAsync();
-        }
-
-        private static void AsyncBeginLoad(object sender, DoWorkEventArgs e)
-        {
-            var Games = SteamCommunity.GetGamesFromCommunity("foohy");
-            // Steam.Initialize();
-            e.Result = (object)Games;
-        }
-
-        private static void AsyncEndLoad(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Error == null && !e.Cancelled)
-            {
-                EndLoad end = new EndLoad(AsyncEndLoad);
-                end.Invoke((List<SteamCommunity.Game>)e.Result);
+                Surface.SetTexture(LoadingMat.GetCurrentTexture());
+                Surface.DrawRect(Utilities.window.Width - (LoadingSize + LoadingOffset), Utilities.window.Height - (LoadingSize + LoadingOffset), LoadingSize, LoadingSize);
+                LoadingText.SetPos(Utilities.window.Width - (LoadingText.GetTextLength() * LoadingText.ScaleW + LoadingSize + LoadingOffset + 10), Utilities.window.Height - (LoadingText.GetTextHeight() / 2 + LoadingSize / 2 + LoadingOffset));
+                LoadingText.Draw();
             }
-
         }
 
-        private static void AsyncEndLoad(List<SteamCommunity.Game> Games)
+        delegate bool loadIsValidDel( string name, out string failReason );
+        static void acceptBtn_OnButtonPress(Panel sender)
         {
-            //Store the list of games
-            AllGames = Games;
+            string username = "";
+            TextInput input = sender.Parent.GetChildByName("community_input") as TextInput;
+            if (input)
+            {
+                username = input.TextLabel.Text;
+            }
+            IsLoadingData = true;
+            loadIsValidDel loadFunc = new loadIsValidDel(SteamCommunity.IsValidName);
+            string FailReason = "Username is blank!";
+            IAsyncResult item = loadFunc.BeginInvoke(username, out FailReason, null, sender);
 
+            TaskManager.AddTask(item, (IAsyncResult res) =>
+            {
+                IsLoadingData = false;
+
+                if (loadFunc.EndInvoke(out FailReason, res) && !string.IsNullOrEmpty(username))
+                {
+                    sender.Parent.Remove();
+                    BeginLoadData(username);
+                }
+                else
+                {
+                    Console.WriteLine("Failed to retrieve profile. {0}", FailReason);
+                    Label progressText = sender.Parent.GetChildByName("progress_text") as Label;
+                    if (progressText)
+                    {
+                        progressText.SetText(FailReason);
+                    }
+                }
+            });
+        }
+
+        delegate List<SteamCommunity.Game> LoadSteamDataDel( string communityName );
+        public static void BeginLoadData( string CommunityName )
+        {
+            IsLoadingData = true;
+            LoadSteamDataDel loadFunc = new LoadSteamDataDel(SteamCommunity.GetGamesFromCommunity);
+            IAsyncResult item = loadFunc.BeginInvoke(CommunityName, null, null );
+
+            TaskManager.AddTask(item, (IAsyncResult res) =>
+                {
+                    var Games = loadFunc.EndInvoke(res);
+                    IsLoadingData = false;
+
+                    EndSteamDataLoad(Games);
+                } );
+        }
+
+
+        public static void EndSteamDataLoad(List<SteamCommunity.Game> Games)
+        {
+            AllGames = Games;
+            Console.WriteLine("GOT SOME GAMES FOR YA: {0}", AllGames != null ? AllGames.Count.ToString() : "NULL");
             //Create the spinner elements
             var FilteredGames = GetFilteredGamesList();
             Spinner.CreateElements(FilteredGames);
 
             //If we're just starting up, tell the lights to turn on
             StartupDelay = (float)Utilities.Time + 1.5f;
+
+            Loaded = true;
         }
-
-
-
-        public delegate void EndLoad(List<SteamCommunity.Game> Games);
 
         static void Keyboard_KeyDown(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
         {
@@ -198,13 +240,22 @@ namespace WheelOfSteamGames
             Spinner = EntManager.Create<ent_spinner>();
             Spinner.Spawn();
             Spinner.SetAngle(new Vector3(0, 180, 0));
-            Spinner.SetPos(new Vector3(0, -(float)Spinner.Model.BBox.Negative.Y, 0));
+            Spinner.SetPos(new Vector3(220, -(float)Spinner.Model.BBox.Negative.Y, 0));
 
             View.Player.SetPos(new Vector3(-13.50925f, 5.614059f, 2.610255f));
             View.Player.SetAngle(new Vector3(0.9982005f, -0.03713433f, 0.05996396f));
             //Notable camera positions
             //Pos: -13.50925f, 5.614059f, 2.610255
             //Ang: 0.9982005f, -0.03713433f, 0.05996396f
+
+            //Spawn the meow meow
+            Actor = EntManager.Create<base_actor>();
+            Actor.Spawn();
+            Actor.LoadAnimations("test");
+            Actor.SetAnimation("animtest");
+            Actor.SetAngle(new Vector3(0, -180, (float)Math.PI));
+            Actor.Scale = new Vector3(10, 10, 10);
+            Actor.SetPos(new Vector3(-5, 10, -5));
 
             //Create some hint text
             HintManager.Initialize();
@@ -220,6 +271,8 @@ namespace WheelOfSteamGames
             Menu.AddCheckBox("Show Favorites only", "game_favorites");
             Menu.AddCheckBox("Show Games with HDR", "game_hdr");
             Menu.AddCheckBox("Show Recently played games", "game_2weeks");
+            Menu.AddCheckBox("Show Games never played", "game_never");
+            Menu.HideToLeft();
 
             Menu.OnAcceptPress += new Action(Menu_OnAcceptPress);
         }
@@ -261,6 +314,9 @@ namespace WheelOfSteamGames
                 if (Menu.GetCheckboxChecked("game_2weeks") && game.HoursLast2Weeks <= 0)
                     return false;
 
+                if (Menu.GetCheckboxChecked("game_never") && game.HoursOnRecord > 0)
+                    return false;
+
                 return true;
 
             });
@@ -278,6 +334,8 @@ namespace WheelOfSteamGames
 
         public static void Think()
         {
+            TaskManager.PollTasks();
+
             if (spotlight != null && Utilities.window.Keyboard[OpenTK.Input.Key.Q])
             {
                 Console.WriteLine(View.Player.Position);
@@ -287,13 +345,14 @@ namespace WheelOfSteamGames
                 spotlight.SetPos(View.Player.Position);
             }
 
-            if (Utilities.Time > StartupDelay && !Started && !worker.IsBusy)
+            if (Utilities.Time > StartupDelay && !Started && Loaded)
             {
                 HintManager.AddHint("Press space to spin!", 2.0f, 5.0f, "spin_controls_hint");
                 Started = true;
                 spotlight.Enabled = true;
                 Audio.PlaySound("Resources/Audio/light_on.wav");
                 ShadowTechnique.Enabled = true;
+                Menu.ShowToLeft();
             }
         }
 

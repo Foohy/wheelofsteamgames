@@ -1,4 +1,4 @@
 {
-	'Shader' 		: 'default',
-	'Basetexture' 	: 'engine/white.png',
+	'shader' 		: 'default',
+	'basetexture' 	: 'engine/white.png',
 }

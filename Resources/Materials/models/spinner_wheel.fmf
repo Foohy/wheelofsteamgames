@@ -1,4 +1,4 @@
 {
-	'Shader' 		: 'default_lighting',
-	'Basetexture' 	: 'models/spinner_wheel.png',
+	'shader' 		: 'default_lighting',
+	'basetexture' 	: 'models/spinner_wheel.png',
 }

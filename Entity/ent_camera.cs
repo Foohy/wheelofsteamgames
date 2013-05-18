@@ -45,7 +45,7 @@ namespace WheelOfSteamGames.Entity
                 multiplier = 20;
 
             Vector3 NewPos = this.Position;
-
+            /*
             if (window.Keyboard[Key.W])
             {
                 NewPos.X += (float)Math.Cos(CamAngle.X) * (float)Utilities.Frametime * multiplier;
@@ -81,7 +81,7 @@ namespace WheelOfSteamGames.Entity
                 CamAngle += new Vector2d(Input.deltaX / 350f, Input.deltaY / -350f);
             }
             CamAngle = new Vector2d((float)CamAngle.X, Utilities.Clamp((float)CamAngle.Y, 1.0f, -1.0f)); //Clamp it because I can't math correctly
-
+            */
             this.SetPos(NewPos, false);
             this.SetAngle(new Vector3((float)CamAngle.X, (float)CamAngle.Y, 0));
 

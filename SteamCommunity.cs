@@ -39,10 +39,45 @@ namespace WheelOfSteamGames
 
         }
 
+        public static bool IsValidName(string communityName, out string reason )
+        {
+            bool valid = true;
+            reason = "No reason specified";
+            try
+            {
+                string url = string.Format(SteamURL, communityName);
+                XmlReaderSettings settings = new XmlReaderSettings();
+                settings.DtdProcessing = DtdProcessing.Ignore;
+                using (XmlReader reader = XmlReader.Create(url, settings))
+                {
+                    
+                    while (reader.Read())
+                    {
+                        if (reader.IsStartElement())
+                        {
+                            //Do some preliminary parsing before we start checking out some steam gaemz
+                            switch (reader.Name)
+                            {
+                                case "error":
+                                    reader.Read();
+                                    reason = reader.Value;
+                                    valid = false;
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e) { valid = false; reason = e.Message; }
+
+            return valid;
+        }
+
         public static List<Game> GetGamesFromCommunity(string communityname)
         {
+            Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId);
             Games.Clear();
-            string url = string.Format("http://steamcommunity.com/id/{0}/games?tab=all&xml=1", communityname );
+            string url = string.Format(SteamURL, communityname);
             using (XmlReader reader = XmlReader.Create(url))
             {
                 while (reader.Read())
@@ -151,21 +186,22 @@ namespace WheelOfSteamGames
         }
 
         private static void GetAdditionalInfo( Game game )
-        {
-
-            WebClient wc = new WebClient();
+        {     
             string jsonString = "";
-
+            Newtonsoft.Json.Linq.JObject infObj = null;
             try
             {
+                WebClient wc = new WebClient();
                 jsonString = wc.DownloadString(string.Format(StoreURL, game.AppID));
+                infObj = Newtonsoft.Json.Linq.JObject.Parse(jsonString);
             }
             catch (Exception e)
             {
                 Console.WriteLine("Failed to get game info for {0}: {1}", game.Name, e.Message);
+                return;
             }
 
-            Newtonsoft.Json.Linq.JObject infObj = Newtonsoft.Json.Linq.JObject.Parse(jsonString);
+            
 
             bool successful = infObj[game.AppID.ToString()]["success"].ToString() == bool.TrueString;
 

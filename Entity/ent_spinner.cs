@@ -192,7 +192,7 @@ namespace WheelOfSteamGames.Entity
 
         public void Spin(float force)
         {
-            if (this.IsSpinning || this.Games == null) return;
+            if (this.IsSpinning || this.Games == null || this.Games.Count <= 0) return;
 
             CurrentAngle = Wheel.Angle.X;
             SpeedTime = Utilities.Time;
@@ -213,7 +213,7 @@ namespace WheelOfSteamGames.Entity
             Wheel.Position = this.Position;
             Wheel.Angle = this.Angle + new Vector3(this.CurrentAngle, 0, 0);
 
-            if (Games == null) return;
+            if (Games == null || Games.Count <= 0) return;
 
             Paddle.Position = this.Position + PaddlePositionOffset;
             Paddle.Angle = new Vector3(this.Angle.X + GetPaddleTurn(this.CurrentAngle), this.Angle.Y, this.Angle.Z);
