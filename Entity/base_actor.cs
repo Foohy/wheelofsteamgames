@@ -12,7 +12,7 @@ namespace WheelOfSteamGames.Entity
     class base_actor : BaseEntity 
     {
         public const string AnimationDir = "/animations/";
-        public double TimePerFrame = 1 / 30;
+        public double TimePerFrame = 1d / 45d;
         public int CurrentFrame = 0;
         public string CurrentAnimation = "idle";
         public Dictionary<string, int[]> Animations = new Dictionary<string, int[]>();
@@ -20,9 +20,10 @@ namespace WheelOfSteamGames.Entity
         private double nextFrameTime = 0;
         public override void Init()
         {
-            this.SetModel(Resource.GetMesh("debug/quad.obj", true));
-            this.Mat = new Material(Utilities.ErrorTex, "default_lighting");
+            this.SetModel(Resource.GetMesh("character_plane.obj", true));
+            this.Mat = new Material(Utilities.ErrorTex, "default");
             this.Mat.Properties.AlphaTest = true;
+            this.Mat.Properties.NoCull = true;
         }
 
         public override void Think()
@@ -32,8 +33,9 @@ namespace WheelOfSteamGames.Entity
             //Change our frame in accordance to time
             if (nextFrameTime < Utilities.Time && Animations.Count > 0 && Animations.ContainsKey(CurrentAnimation))
             {
+                double delta = Utilities.Time - nextFrameTime;
                 nextFrameTime = Utilities.Time + this.TimePerFrame;
-                CurrentFrame++;
+                CurrentFrame += 1 + (int)Math.Floor(delta / this.TimePerFrame);
                 CurrentFrame = CurrentFrame < this.Animations[this.CurrentAnimation].Length ? CurrentFrame : 0;
                 this.Mat.Properties.BaseTexture = this.Animations[this.CurrentAnimation][CurrentFrame];
             }
