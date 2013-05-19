@@ -114,29 +114,29 @@ float CalcShadowFactor(vec4 LightSpacePos)
     UVCoords.x = 0.5 * ProjCoords.x + 0.5;
     UVCoords.y = 0.5 * ProjCoords.y + 0.5;
     float z = 0.5 * ProjCoords.z + 0.5;
-	/*
+
 	float visibility = 1.0;
-	for (int i=0;i<4;i++)
+
+	for (int i=0;i<16;i++)
 	{
-		float Depth = texture2D(sampler_shadow, UVCoords);
-		if ( Depth < z+0.00001 )
+		int index = int(16.0*random(ex_UV.xyy, i))%16;
+		float Depth = texture2D(sampler_shadow, UVCoords + poissonDisk[index]/700.0);
+		if ( Depth < z + 0.0001)
 		{
-			visibility-=0.2;
+			visibility -= 0.07;
+		}
+			//visibility-=0.2;
+			//int index = i;
 			//int index = int(16.0*random(ex_UV.xyy, i))%16;
 			//vec2 coords = UVCoords + poissonDisk[index]/700.0;
-			//visibility -= float(0.2*(1.0-texture( sampler_shadow, vec3(ex_LightSpacePos.xy + poissonDisk[index]/700.0,  (z-0.005)/ex_LightSpacePos.w) )));
-		}
+			//visibility -= float(0.2*(1.0-texture2D( sampler_shadow, coords ).x));
+			
+		//}
 	}
-	*/
-	//return visibility;
-
-    float Depth = texture2D(sampler_shadow, UVCoords);
-    if (Depth < (z + 0.00001)) //(Depth < (z + 0.00001))
-        return 0.0;
-    else
-        return 1.0;
 
 
+
+	return visibility;
 } 
 
 vec4 CalcLightInternal( BaseLight Light, vec3 LightDirection, vec3 Normal, float ShadowFactor)
@@ -204,7 +204,7 @@ vec4 CalcShadowPointLight(PointLight l, vec3 Normal, vec4 LightSpacePos)
     vec3 LightDirection = WorldPos0 - l.Position;
     float Distance = length(LightDirection);
     LightDirection = normalize(LightDirection);
-	float ShadowFactor = CalcShadowFactor( ex_LightSpacePos );
+	float ShadowFactor = CalcShadowFactor( ex_LightSpacePos);
 
     vec4 Color = CalcLightInternal(l.Base, LightDirection, Normal, ShadowFactor);
 
