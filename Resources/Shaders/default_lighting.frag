@@ -119,22 +119,13 @@ float CalcShadowFactor(vec4 LightSpacePos)
 
 	for (int i=0;i<16;i++)
 	{
-		int index = int(16.0*random(ex_UV.xyy, i))%16;
-		float Depth = texture2D(sampler_shadow, UVCoords + poissonDisk[index]/700.0);
-		if ( Depth < z + 0.0001)
+		int index = int(16.0*random(gl_FragCoord.xyy, i))%16;
+		float Depth = texture2D(sampler_shadow, UVCoords + poissonDisk[index]/900.0);
+		if ( Depth < z + 0.00000001)
 		{
 			visibility -= 0.07;
 		}
-			//visibility-=0.2;
-			//int index = i;
-			//int index = int(16.0*random(ex_UV.xyy, i))%16;
-			//vec2 coords = UVCoords + poissonDisk[index]/700.0;
-			//visibility -= float(0.2*(1.0-texture2D( sampler_shadow, coords ).x));
-			
-		//}
 	}
-
-
 
 	return visibility;
 } 
