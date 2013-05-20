@@ -14,6 +14,7 @@ namespace WheelOfSteamGames
 {
     class Program : GameWindow
     {
+        public const string SettingsFile = "settings.cfg";
         public Engine engine;
         public Program(Settings settings)
             : base(settings.Width, settings.Height, new GraphicsMode(32, 24, 0, settings.Samples), "Wheel of Vidya Games", settings.WindowMode == WindowState.Fullscreen && settings.NoBorder ? GameWindowFlags.Fullscreen : GameWindowFlags.Default )
@@ -27,7 +28,7 @@ namespace WheelOfSteamGames
                 this.WindowState = settings.WindowMode;
             else if (settings.NoBorder) this.WindowState = OpenTK.WindowState.Normal;
 
-            engine = new Engine(this); //Create the engine class that'll do all the heavy lifting
+            engine = new Engine(this, settings ); //Create the engine class that'll do all the heavy lifting
             engine.OnRenderScene += new Action<FrameEventArgs>(RenderScene);
         }
 
@@ -96,7 +97,7 @@ namespace WheelOfSteamGames
         [STAThread]
         static void Main(string[] args)
         {
-            using (Program game = new Program( new Settings()))
+            using (Program game = new Program(new Settings(SettingsFile)))
             {
                 game.Run(60.0);
             }
