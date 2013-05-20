@@ -135,7 +135,7 @@ namespace WheelOfSteamGames.GUI
 
         public override void Draw()
         {
-            this.SetPos(Utilities.Lerp(this.Position.X, XGoal, 0.1f), Utilities.window.Height / 2 - (this.Height + TitlePanel.Height) / 2);
+            this.SetPos(Utilities.Lerp(this.Position.X, XGoal, (float)Utilities.Frametime * 10), Utilities.window.Height / 2 - (this.Height + TitlePanel.Height) / 2);
             Quit.SetPos(new Vector2(this.Position.X, Quit.Position.Y));
 
             base.Draw();
