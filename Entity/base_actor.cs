@@ -43,15 +43,22 @@ namespace WheelOfSteamGames.Entity
 
         public void LoadAnimations(string name)
         {
-            string folder = AnimationDir + name + "/";
-            string[] files = Directory.GetFiles(Resource.TextureDir + folder);
-
-            foreach (string file in files)
+            try
             {
-                string filename = Path.GetFileNameWithoutExtension(file);
-                string AnimationName = filename.Remove(filename.Length - 4);
+                string folder = AnimationDir + name + "/";
+                string[] files = Directory.GetFiles(Resource.TextureDir + folder);
 
-                if (!Animations.ContainsKey(AnimationName)) LoadSingleAnimation(AnimationName, folder);
+                foreach (string file in files)
+                {
+                    string filename = Path.GetFileNameWithoutExtension(file);
+                    string AnimationName = filename.Remove(filename.Length - 4);
+
+                    if (!Animations.ContainsKey(AnimationName)) LoadSingleAnimation(AnimationName, folder);
+                }
+            }
+            catch (Exception e)
+            {
+                Utilities.Print("Failed to load animations for '{0}'! {1}", Utilities.PrintCode.ERROR, name, e.Message);
             }
         }
 
