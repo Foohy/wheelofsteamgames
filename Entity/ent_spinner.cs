@@ -221,14 +221,11 @@ namespace WheelOfSteamGames.Entity
             //Spin if neccessary
             if (Utilities.Time < SpeedTime + SpeedupTime)
             {
-                CurrentSpeed += (float)Utilities.Frametime * this.SpinupForce;
-
-                //Console.WriteLine("Spinning up: {0}", CurrentSpeed );
+                CurrentSpeed += (float)Utilities.ThinkTime * this.SpinupForce;
             }
             else if (CurrentSpeed > 0)
             {
-                CurrentSpeed -= (float)Utilities.Frametime * this.SpinFriction;
-                //Console.WriteLine("Slowing down: {0}", CurrentSpeed );
+                CurrentSpeed -= (float)Utilities.ThinkTime * this.SpinFriction;
             }
             else if (this.IsSpinning)
             {

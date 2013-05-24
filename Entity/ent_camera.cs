@@ -45,28 +45,28 @@ namespace WheelOfSteamGames.Entity
             {
                 if (window.Keyboard[Key.W])
                 {
-                    NewPos.X += (float)Math.Cos(CamAngle.X) * (float)Utilities.Frametime * multiplier;
-                    NewPos.Y += (float)Math.Sin(CamAngle.Y) * (float)Utilities.Frametime * multiplier;
-                    NewPos.Z += (float)Math.Sin(CamAngle.X) * (float)Utilities.Frametime * multiplier;
+                    NewPos.X += (float)Math.Cos(CamAngle.X) * (float)Utilities.ThinkTime * multiplier;
+                    NewPos.Y += (float)Math.Sin(CamAngle.Y) * (float)Utilities.ThinkTime * multiplier;
+                    NewPos.Z += (float)Math.Sin(CamAngle.X) * (float)Utilities.ThinkTime * multiplier;
                 }
 
                 if (window.Keyboard[Key.S])
                 {
-                    NewPos.X -= (float)Math.Cos(CamAngle.X) * (float)Utilities.Frametime * multiplier;
-                    NewPos.Y -= (float)Math.Sin(CamAngle.Y) * (float)Utilities.Frametime * multiplier;
-                    NewPos.Z -= (float)Math.Sin(CamAngle.X) * (float)Utilities.Frametime * multiplier;
+                    NewPos.X -= (float)Math.Cos(CamAngle.X) * (float)Utilities.ThinkTime * multiplier;
+                    NewPos.Y -= (float)Math.Sin(CamAngle.Y) * (float)Utilities.ThinkTime * multiplier;
+                    NewPos.Z -= (float)Math.Sin(CamAngle.X) * (float)Utilities.ThinkTime * multiplier;
                 }
 
                 if (window.Keyboard[Key.D])
                 {
-                    NewPos.X += (float)Math.Cos(CamAngle.X + Math.PI / 2) * (float)Utilities.Frametime * multiplier;
-                    NewPos.Z += (float)Math.Sin(CamAngle.X + Math.PI / 2) * (float)Utilities.Frametime * multiplier;
+                    NewPos.X += (float)Math.Cos(CamAngle.X + Math.PI / 2) * (float)Utilities.ThinkTime * multiplier;
+                    NewPos.Z += (float)Math.Sin(CamAngle.X + Math.PI / 2) * (float)Utilities.ThinkTime * multiplier;
                 }
 
                 if (window.Keyboard[Key.A])
                 {
-                    NewPos.X -= (float)Math.Cos(CamAngle.X + Math.PI / 2) * (float)Utilities.Frametime * multiplier;
-                    NewPos.Z -= (float)Math.Sin(CamAngle.X + Math.PI / 2) * (float)Utilities.Frametime * multiplier;
+                    NewPos.X -= (float)Math.Cos(CamAngle.X + Math.PI / 2) * (float)Utilities.ThinkTime * multiplier;
+                    NewPos.Z -= (float)Math.Sin(CamAngle.X + Math.PI / 2) * (float)Utilities.ThinkTime * multiplier;
                 }
 
                 CamAngle += new Vector2d(Input.deltaX / 350f, Input.deltaY / -350f);
