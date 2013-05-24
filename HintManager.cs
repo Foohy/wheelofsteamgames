@@ -12,6 +12,10 @@ namespace WheelOfSteamGames
 {
     class HintManager
     {
+        /// <summary>
+        /// Speed at which the hints move in and out of the screen
+        /// </summary>
+        public static float MoveSpeed = 3;
         class Hint
         {
             public Text hintText;
@@ -29,11 +33,12 @@ namespace WheelOfSteamGames
             /// <param name="delay">Time to wait before the hint is actually displayed</param>
             public Hint(string Text, float duration, float delay, string UniqueName)
             {
-                hintText = new Text("game_large", Text);
+                hintText = new Text("windowtitle", Text);
                 Delay = (float)Utilities.Time + delay;
                 Duration = Delay + duration;
 
-                hintText.SetScale(0.35f, 0.35f);
+                float HintScale = (float)Utilities.window.Height / 800f;
+                hintText.SetScale(HintScale, HintScale);
                 hintText.SetPos((Utilities.window.Width / 2) - (hintText.GetTextLength() / 2) * hintText.ScaleW, -hintText.GetTextHeight());
 
                 Name = UniqueName;
@@ -66,7 +71,7 @@ namespace WheelOfSteamGames
 
                         if ( Math.Abs(h.YSmooth - h.YReal) > 0.5 )
                         {
-                            h.YSmooth = Utilities.Lerp(h.YSmooth, h.YReal, 0.1f);
+                            h.YSmooth = Utilities.Lerp(h.YSmooth, h.YReal, (float)Utilities.Frametime * MoveSpeed);
                         }
                         else
                         {
@@ -77,7 +82,7 @@ namespace WheelOfSteamGames
                     else
                     {
                         h.YReal = h.hintText.GetTextHeight() + 10;
-                        h.YSmooth = Utilities.Lerp(h.YSmooth, h.YReal, 0.1f);
+                        h.YSmooth = Utilities.Lerp(h.YSmooth, h.YReal, (float)Utilities.Frametime * MoveSpeed);
                     }
 
                     h.hintText.SetPos(h.hintText.X, h.YSmooth);
