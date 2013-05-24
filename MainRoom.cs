@@ -235,8 +235,6 @@ namespace WheelOfSteamGames
             
             Audio.Precache("Resources/Audio/light_on.wav");
 
-            ShadowTechnique.Enable();
-
             Spinner = EntManager.Create<ent_spinner>();
             Spinner.Spawn();
             Spinner.SetAngle(new Vector3(0, 180, 0));
@@ -352,7 +350,6 @@ namespace WheelOfSteamGames
                 Started = true;
                 spotlight.Enabled = true;
                 Audio.PlaySound("Resources/Audio/light_on.wav");
-                ShadowTechnique.Enabled = true;
                 Actor.ShouldDraw = true;
             }
         }
