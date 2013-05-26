@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using System.Xml;
 using System.IO;
+using System.Text.RegularExpressions;
 
 using Newtonsoft.Json;
 namespace WheelOfSteamGames
@@ -37,9 +38,11 @@ namespace WheelOfSteamGames
         public static string CommunityID { get; private set; }
         public static string SteamName { get; private set; }
         public static List<Game> Games = new List<Game>();
+        public static bool IsOnline { get; private set; }
 
         public static bool IsValidName(string communityName, out string reason )
         {
+            IsOnline = false;
             bool valid = true;
             reason = "No reason specified";
             try
@@ -66,6 +69,7 @@ namespace WheelOfSteamGames
                                 case "steamID64":
                                     reader.Read();
                                     CommunityID = reader.Value;
+                                    IsOnline = true;
                                     break;
                             }
                         }
@@ -118,14 +122,16 @@ namespace WheelOfSteamGames
                 GetAdditionalInfo(g);
             }
 
-            SaveGames(Games);
+            if (IsOnline)
+                SaveGames(Games);
 
             return Games;
         }
 
         public static List<Game> GetGames(string communityname, string communityid)
         {
-            if (File.Exists(SavesFolder + communityid))
+            string filename = GetSave(communityid);
+            if (!string.IsNullOrEmpty(filename) && File.Exists(filename))
             {
                 Console.WriteLine("Loading data from file!");
                 string json = File.ReadAllText(SavesFolder + communityid);
@@ -138,12 +144,42 @@ namespace WheelOfSteamGames
             }
         }
 
+        private static string GetSave(string communityID)
+        {
+            var localSaves = GetLocalSaves();
+
+            foreach (var save in localSaves)
+            {
+                if (save.Key == communityID)
+                {
+                    return string.Format("{0}{1} {2}", SavesFolder, save.Key, save.Value);
+                }
+            }
+
+            return null;
+        }
+
+        public static Dictionary<string, string> GetLocalSaves()
+        {
+            Dictionary<string, string> Saves = new Dictionary<string, string>();
+            string[] files = Directory.GetFiles(SavesFolder, "* *");
+            foreach (string file in files )
+            {
+                string filename = Path.GetFileNameWithoutExtension(file);
+                string communityid = filename.Substring(0, 17);
+                string communityname = filename.Substring(18);
+                Saves.Add(communityid, communityname );
+            }
+
+            return Saves;   
+        }
+
         private static void SaveGames( List<Game> Games)
         {
             string json = JsonConvert.SerializeObject(Games);
 
             if (!Directory.Exists(SavesFolder)) Directory.CreateDirectory(SavesFolder);
-            File.WriteAllText(SavesFolder + CommunityID, json);
+            File.WriteAllText( string.Format("{0}{1} {2}",SavesFolder, CommunityID, SteamName), json);
         }
 
         private static void ParsegamesList(XmlReader reader)
