@@ -29,12 +29,22 @@ namespace WheelOfSteamGames.GUI
             this.SetColor(20, 24, 33);
             this.ClipChildren = false;
 
+            Button ChangeUsername = GUIManager.Create<Button>(this);
+            ChangeUsername.SetHeight(25);
+            ChangeUsername.SetWidth(this.Width - 32);
+            ChangeUsername.SetPos(16, this.Height - (ChangeUsername.Height + 16));
+            ChangeUsername.SetAnchorStyle(Anchors.Left | Anchors.Bottom | Anchors.Right);
+            ChangeUsername.SetText("Change Username");
+            ChangeUsername.OnButtonPress += new Button.OnButtonPressDel(ChangeUsername_OnButtonPress);
+
             OKButton = GUIManager.Create<Button>(this);
-            OKButton.DockPadding(16, 16, 16, 8);
+            OKButton.SetWidth(this.Width - 32);
             OKButton.SetHeight(35);
-            OKButton.Dock(DockStyle.BOTTOM);
+            OKButton.SetPos(16, ChangeUsername.Position.Y - (8 + 35 ));
+            OKButton.SetAnchorStyle(Anchors.Left | Anchors.Bottom | Anchors.Right);
             OKButton.SetText("Accept");
             OKButton.OnButtonPress += new Button.OnButtonPressDel(OKButton_OnButtonPress);
+
 
             Quit = GUIManager.Create<Button>();
             Quit.SetWidth(60);
@@ -61,6 +71,12 @@ namespace WheelOfSteamGames.GUI
             TitleText.DockPadding(10, 10, 0, 0);
 
             Utilities.engine.OnSceneResize += new Action(engine_OnSceneResize);
+        }
+
+        void ChangeUsername_OnButtonPress(Panel sender)
+        {
+            Window msgBox = MainRoom.CreateUserSelectDialogue();
+            msgBox.SetEnableCloseButton(true);
         }
 
         void OKButton_OnButtonPress(Panel sender)

@@ -50,6 +50,11 @@ namespace WheelOfSteamGames
             GUIManager.PostDrawHUD += new GUIManager.OnDrawHUD(GUIManager_PostDrawHUD);
 
             //On startup, ask for steam community username
+            CreateUserSelectDialogue();
+        }
+
+        public static Window CreateUserSelectDialogue()
+        {
             Window msgBox = GUIManager.Create<Window>();
             msgBox.SetTitle("Enter Username");
             msgBox.Resizable = false;
@@ -84,7 +89,7 @@ namespace WheelOfSteamGames
             localSaveBtn.SetText("Local Saves...");
             localSaveBtn.SetWidth(120);
             localSaveBtn.SetHeight(20);
-            localSaveBtn.SetPos( new Vector2( 0, connectPanel.Height - (localSaveBtn.Height + 20)));
+            localSaveBtn.SetPos(new Vector2(0, connectPanel.Height - (localSaveBtn.Height + 20)));
             localSaveBtn.AlignRight(20);
             localSaveBtn.SetAnchorStyle(Panel.Anchors.Bottom | Panel.Anchors.Right);
             localSaveBtn.OnButtonPress += new Button.OnButtonPressDel(localSaveBtn_OnButtonPress);
@@ -93,7 +98,7 @@ namespace WheelOfSteamGames
             acceptBtn.SetText("Go");
             acceptBtn.SetWidth(localSaveBtn.Position.X - 40);
             acceptBtn.SetHeight(20);
-            acceptBtn.SetPos( new Vector2( 20, localSaveBtn.Position.Y ) );
+            acceptBtn.SetPos(new Vector2(20, localSaveBtn.Position.Y));
             acceptBtn.AlignLeft(20);
             acceptBtn.SetAnchorStyle(Panel.Anchors.Bottom | Panel.Anchors.Right | Panel.Anchors.Left);
             acceptBtn.OnButtonPress += new Button.OnButtonPressDel(acceptBtn_OnButtonPress);
@@ -136,7 +141,7 @@ namespace WheelOfSteamGames
             {
                 savesList.AddListItem(Save, Save.Value, Save.Key);
             }
-            
+
             Button connectPanelBtn = GUIManager.Create<Button>(savesPanel);
             connectPanelBtn.SetText("Connect to steam...");
             connectPanelBtn.SetWidth(120);
@@ -165,6 +170,7 @@ namespace WheelOfSteamGames
 
             #endregion
 
+            return msgBox;
         }
 
         static void acceptSavesBtn_OnButtonPress(Panel sender)
@@ -192,6 +198,7 @@ namespace WheelOfSteamGames
 
             if (IsLoadingData)
             {
+                Surface.SetDrawColor(255, 255, 255);
                 Surface.SetTexture(LoadingMat.GetCurrentTexture());
                 Surface.DrawRect(Utilities.window.Width - (LoadingSize + LoadingOffset), Utilities.window.Height - (LoadingSize + LoadingOffset), LoadingSize, LoadingSize);
                 LoadingText.SetPos(Utilities.window.Width - (LoadingText.GetTextLength() * LoadingText.ScaleW + LoadingSize + LoadingOffset + 10), Utilities.window.Height - (LoadingText.GetTextHeight() / 2 + LoadingSize / 2 + LoadingOffset));
