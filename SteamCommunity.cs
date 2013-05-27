@@ -134,7 +134,7 @@ namespace WheelOfSteamGames
             if (!string.IsNullOrEmpty(filename) && File.Exists(filename))
             {
                 Console.WriteLine("Loading data from file!");
-                string json = File.ReadAllText(SavesFolder + communityid);
+                string json = File.ReadAllText(filename);
                 return JsonConvert.DeserializeObject<List<Game>>(json);
             }
             else
