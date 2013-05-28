@@ -33,6 +33,7 @@ namespace WheelOfSteamGames
         private static Material LoadingMat;
         private static Text LoadingText;
         private static base_actor Actor;
+        private static Window usernameWindow;
 
         public static void Initialize()
         {
@@ -55,18 +56,20 @@ namespace WheelOfSteamGames
 
         public static Window CreateUserSelectDialogue()
         {
-            Window msgBox = GUIManager.Create<Window>();
-            msgBox.SetTitle("Enter Username");
-            msgBox.Resizable = false;
-            msgBox.SetWidth(380);
-            msgBox.SetHeight(115);
-            msgBox.SetEnableCloseButton(false);
-            msgBox.SetPos(Utilities.window.Width / 2 - msgBox.Width / 2, Utilities.window.Height / 2 - msgBox.Height / 2);
-            msgBox.MinimumSize = new Vector2(289, 115);
+            if (usernameWindow) return usernameWindow;
+
+            usernameWindow = GUIManager.Create<Window>();
+            usernameWindow.SetTitle("Enter Username");
+            usernameWindow.Resizable = false;
+            usernameWindow.SetWidth(380);
+            usernameWindow.SetHeight(115);
+            usernameWindow.SetEnableCloseButton(false);
+            usernameWindow.SetPos(Utilities.window.Width / 2 - usernameWindow.Width / 2, Utilities.window.Height / 2 - usernameWindow.Height / 2);
+            usernameWindow.MinimumSize = new Vector2(289, 115);
 
             #region Connection panel (For accessing an account over the internet)
             //Create a panel that will hold all of the connect online related things
-            Panel connectPanel = GUIManager.Create<Panel>(msgBox);
+            Panel connectPanel = GUIManager.Create<Panel>(usernameWindow);
             connectPanel.DockPadding(2, 2, 2, 2);
             connectPanel.Dock(Panel.DockStyle.FILL);
             connectPanel.ShouldDraw = false;
@@ -115,7 +118,7 @@ namespace WheelOfSteamGames
             #region Local Saves panel (For using pre-existing saves of games)
 
             //Create a panel that will hold a list of local saves to load from
-            Panel savesPanel = GUIManager.Create<Panel>(msgBox);
+            Panel savesPanel = GUIManager.Create<Panel>(usernameWindow);
             savesPanel.DockPadding(2, 2, 2, 2);
             savesPanel.Dock(Panel.DockStyle.FILL);
             savesPanel.ShouldDraw = false;
@@ -170,7 +173,7 @@ namespace WheelOfSteamGames
 
             #endregion
 
-            return msgBox;
+            return usernameWindow;
         }
 
         static void acceptSavesBtn_OnButtonPress(Panel sender)
@@ -185,7 +188,11 @@ namespace WheelOfSteamGames
             string communityname = data.Value;
             string communityid = data.Key;
 
-            sender.Parent.Parent.Remove();
+            if (usernameWindow)
+            {
+                usernameWindow.Remove();
+                usernameWindow = null;
+            }
             BeginLoadData(communityname, communityid );
         }
 
@@ -226,7 +233,11 @@ namespace WheelOfSteamGames
 
                 if (loadFunc.EndInvoke(out FailReason, res) && !string.IsNullOrEmpty(username))
                 {
-                    sender.Parent.Parent.Remove();
+                    if (usernameWindow)
+                    {
+                        usernameWindow.Remove();
+                        usernameWindow = null;
+                    }
                     BeginLoadData(username, SteamCommunity.CommunityID);
                 }
                 else
@@ -277,6 +288,8 @@ namespace WheelOfSteamGames
         delegate List<SteamCommunity.Game> LoadSteamDataDel( string communityName, string communityID );
         public static void BeginLoadData( string CommunityName, string CommunityID )
         {
+            Menu.HideToLeft();
+
             IsLoadingData = true;
             LoadSteamDataDel loadFunc = new LoadSteamDataDel(SteamCommunity.GetGames);
             IAsyncResult item = loadFunc.BeginInvoke(CommunityName, CommunityID, null, null);
