@@ -14,7 +14,6 @@ namespace WheelOfSteamGames.Entity
 {
     class ent_camera : BaseEntity 
     {
-        Vector2d CamAngle = new Vector2d();
         bool Locked = true;
 
         public override void Init()
@@ -29,6 +28,7 @@ namespace WheelOfSteamGames.Entity
         }
 
         //Since we're going to be the default source of where to point the camera, we have our own dedicated function for it
+        //This is called through reflection in the view manager
         public void CalcView()
         {
             GameWindow window = Utilities.window;
@@ -43,41 +43,39 @@ namespace WheelOfSteamGames.Entity
 
             if (!Locked && Input.LockMouse)
             {
+                //Calculate the new angle of the camera
+                this.SetAngle(this.Angles + new Angle(Input.deltaY / -15f, Input.deltaX / 15f, 0));
+
+                Vector3 Forward, Right, Up;
+                this.Angles.AngleVectors(out Forward, out Up, out Right);
+
+                //Calculate the new position
                 if (window.Keyboard[Key.W])
                 {
-                    NewPos.X += (float)Math.Cos(CamAngle.X) * (float)Utilities.ThinkTime * multiplier;
-                    NewPos.Y += (float)Math.Sin(CamAngle.Y) * (float)Utilities.ThinkTime * multiplier;
-                    NewPos.Z += (float)Math.Sin(CamAngle.X) * (float)Utilities.ThinkTime * multiplier;
+                    NewPos += Forward * (float)Utilities.ThinkTime * multiplier;
                 }
 
                 if (window.Keyboard[Key.S])
                 {
-                    NewPos.X -= (float)Math.Cos(CamAngle.X) * (float)Utilities.ThinkTime * multiplier;
-                    NewPos.Y -= (float)Math.Sin(CamAngle.Y) * (float)Utilities.ThinkTime * multiplier;
-                    NewPos.Z -= (float)Math.Sin(CamAngle.X) * (float)Utilities.ThinkTime * multiplier;
+                    NewPos -= Forward * (float)Utilities.ThinkTime * multiplier;
                 }
 
                 if (window.Keyboard[Key.D])
                 {
-                    NewPos.X += (float)Math.Cos(CamAngle.X + Math.PI / 2) * (float)Utilities.ThinkTime * multiplier;
-                    NewPos.Z += (float)Math.Sin(CamAngle.X + Math.PI / 2) * (float)Utilities.ThinkTime * multiplier;
+                    NewPos -= Right * (float)Utilities.ThinkTime * multiplier;
                 }
 
                 if (window.Keyboard[Key.A])
                 {
-                    NewPos.X -= (float)Math.Cos(CamAngle.X + Math.PI / 2) * (float)Utilities.ThinkTime * multiplier;
-                    NewPos.Z -= (float)Math.Sin(CamAngle.X + Math.PI / 2) * (float)Utilities.ThinkTime * multiplier;
+                    NewPos += Right * (float)Utilities.ThinkTime * multiplier;
                 }
 
-                CamAngle += new Vector2d(Input.deltaX / 350f, Input.deltaY / -350f);
+                this.SetPos(NewPos, false);
             }
-            CamAngle = new Vector2d((float)CamAngle.X, Utilities.Clamp((float)CamAngle.Y, 1.0f, -1.0f)); //Clamp it because I can't math correctly
-
-            this.SetPos(NewPos, false);
-            this.SetAngle(new Vector3((float)CamAngle.X, (float)CamAngle.Y, 0));
+            
 
             View.SetPos(this.Position);
-            View.SetAngles(this.Angle);
+            View.SetAngles(this.Angles);
         }
 
         public override void Draw()

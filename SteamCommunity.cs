@@ -166,7 +166,7 @@ namespace WheelOfSteamGames
             foreach (string file in files )
             {
                 string filename = Path.GetFileName(file);
-                string communityid = filename.Substring(0, 17);
+                 string communityid = filename.Substring(0, 17);
                 string communityname = filename.Substring(18);
                 Saves.Add(communityid, communityname );
             }

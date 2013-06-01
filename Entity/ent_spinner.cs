@@ -36,7 +36,6 @@ namespace WheelOfSteamGames.Entity
         Mesh Wheel;
         Mesh Paddle;
         Text CurrentGameText;
-        const float RAD2DEG = 180f / (float)Math.PI;
 
         //Info for the basetexture so we can overlay new info on it
         private int Diameter = 815; //848;
@@ -125,8 +124,8 @@ namespace WheelOfSteamGames.Entity
 
                 gp.AddPolygon(Points);
 
-                float StartAngle = (i * ElementSizeRadians + WheelAngleOffset) * RAD2DEG;
-                float EndAngle = ((i + 1) * ElementSizeRadians + WheelAngleOffset) * RAD2DEG;
+                float StartAngle = (i * ElementSizeRadians + WheelAngleOffset) * Utilities.F_RAD2DEG;
+                float EndAngle = ((i + 1) * ElementSizeRadians + WheelAngleOffset) * Utilities.F_RAD2DEG;
                 gp.AddArc(0, 0, Diameter, Diameter, StartAngle + 360, Math.Abs(StartAngle - EndAngle));
                 gp.CloseAllFigures();
 
@@ -138,9 +137,9 @@ namespace WheelOfSteamGames.Entity
 
                 float TextAngle = ((i + 0.5f) * ElementSizeRadians + WheelAngleOffset);
                 g.TranslateTransform(WheelCenter, WheelCenter);
-                g.RotateTransform(TextAngle * RAD2DEG);
+                g.RotateTransform(TextAngle * Utilities.F_RAD2DEG);
                 g.DrawString(Games[i].Name, font, System.Drawing.Brushes.Black, new System.Drawing.PointF( 130 * TextureScale, -font.Size/2));
-                g.RotateTransform(-TextAngle * RAD2DEG);
+                g.RotateTransform(-TextAngle * Utilities.F_RAD2DEG);
                 g.TranslateTransform(-WheelCenter, -WheelCenter);
             }
 
@@ -194,7 +193,6 @@ namespace WheelOfSteamGames.Entity
         {
             if (this.IsSpinning || this.Games == null || this.Games.Count <= 0) return;
 
-            CurrentAngle = Wheel.Angle.X;
             SpeedTime = Utilities.Time;
             SpinupForce = force;
 
@@ -204,19 +202,19 @@ namespace WheelOfSteamGames.Entity
 
         public float GetPaddleTurn( float angle )
         {
-            angle = angle * RAD2DEG;
-            return ((float)Math.Cos(angle / (this.Games.Count / 4)) * 10) / RAD2DEG;
+            angle = angle * Utilities.F_RAD2DEG;
+            return ((float)Math.Cos(angle / (this.Games.Count / 4)) * 10) / Utilities.F_RAD2DEG;
         }
 
         public override void Think()
         {
             Wheel.Position = this.Position;
-            Wheel.Angle = this.Angle + new Vector3(this.CurrentAngle, 0, 0);
+            Wheel.Angles = this.Angles + new Angle(this.CurrentAngle * Utilities.F_RAD2DEG, 0, 0);
 
             if (Games == null || Games.Count <= 0) return;
 
             Paddle.Position = this.Position + PaddlePositionOffset;
-            Paddle.Angle = new Vector3(this.Angle.X + GetPaddleTurn(this.CurrentAngle), this.Angle.Y, this.Angle.Z);
+            Paddle.Angles = new Angle(this.Angles.Pitch + GetPaddleTurn(this.CurrentAngle), this.Angles.Yaw, this.Angles.Roll);
 
             //Spin if neccessary
             if (Utilities.Time < SpeedTime + SpeedupTime)
@@ -240,7 +238,7 @@ namespace WheelOfSteamGames.Entity
             if (CurrentRegion != LastSoundRegion)
             {
                 LastSoundRegion = CurrentRegion;
-                Audio.PlaySound("Resources/Audio/spinner_click.wav", 1.0f, Utilities.Rand.Next(35280, 52920));
+                Audio.PlaySound("Resources/Audio/spinner_click.wav", 0.5f, Utilities.Rand.Next(35280, 52920));
             }
 
             CurrentAngle += CurrentSpeed;

@@ -378,22 +378,21 @@ namespace WheelOfSteamGames
             spotlight.Color = new Vector3(1.0f, 1.0f, 1.0f);
             spotlight.Constant = 1.0f;
             spotlight.Cutoff = 20.0f;
-            //spotlight.SetAngle(new Vector3(0.9387657f, -0.8191915f, -0.3445562f));
-            //spotlight.SetPos(new Vector3(-12.34661f, 15.45926f, 4.4074f));
-            spotlight.SetAngle(new Vector3(0.5989776f, -0.841471f, -0.8007658f));
+            spotlight.SetAngle( new Angle(-34.31889f, -48.2127f, -45.8805f) );
             spotlight.SetPos(new Vector3(-10.22733f, 17.82458f, 12.54623f));
             spotlight.Enabled = false;
 
-            
             Audio.Precache("Resources/Audio/light_on.wav");
 
             Spinner = EntManager.Create<ent_spinner>();
             Spinner.Spawn();
-            Spinner.SetAngle(new Vector3(0, 180, 0));
+            Spinner.SetAngle(new Angle( 0, 233, 0 ));
             Spinner.SetPos(new Vector3(0, -(float)Spinner.Model.BBox.Negative.Y, 0));
 
             View.Player.SetPos(new Vector3(-13.50925f, 5.614059f, 2.610255f));
-            View.Player.SetAngle(new Vector3(0.9982005f, -0.03713433f, 0.05996396f));
+            View.Player.SetAngle(new Angle(0, 0, 0));
+            //View.Player.SetAngle(new Vector3(0.9982005f, -0.03713433f, 0.05996396f));
+            //View.Player.SetAngle( new Angle( 57.19268f, -2.12764f, 3.435682f ) );
             //Notable camera positions
             //Pos: -13.50925f, 5.614059f, 2.610255
             //Ang: 0.9982005f, -0.03713433f, 0.05996396f
@@ -403,7 +402,7 @@ namespace WheelOfSteamGames
             Actor.Spawn();
             Actor.LoadAnimations("test");
             Actor.SetAnimation("animtest");
-            Actor.SetAngle(new Vector3(0, -180, 0));
+            Actor.SetAngle(new Angle( 0, -Spinner.Angles.Yaw, 0));
             Actor.Scale = new Vector3(10, 10, 10);
             Actor.SetPos(new Vector3(1, -2.5f, 6));
             Actor.ShouldDraw = false;
@@ -492,7 +491,7 @@ namespace WheelOfSteamGames
                 Console.WriteLine(View.Player.Position);
                 Console.WriteLine(View.ViewNormal);
 
-                spotlight.SetAngle(View.ViewNormal);
+                spotlight.SetAngle(View.Angles);
                 spotlight.SetPos(View.Player.Position);
             }
 
