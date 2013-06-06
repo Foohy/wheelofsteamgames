@@ -7,6 +7,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 using OlegEngine;
+using OlegEngine.Entity;
 using OlegEngine.GUI;
 using System.IO;
 
@@ -51,16 +52,21 @@ namespace WheelOfSteamGames.Entity
             TextDisplayMesh = EngineResources.CreateNewQuadMesh();
             TextDisplayMesh.mat = TextMat;
 
-
+            EntManager.OnPostDrawTranslucentEntities += new Action(EntManager_OnPostDrawTranslucentEntities);
             GUIManager.PostDrawHUD += new GUIManager.OnDrawHUD(GUIManager_PostDrawHUD);
         }
 
-        public override void Draw()
+        /// <summary>
+        /// Since the announcer text will fade, we draw it after all the opaque renderables are drawn
+        /// </summary>
+        void EntManager_OnPostDrawTranslucentEntities()
         {
-            base.Draw();
-
             if (TextEndFadeTime > Utilities.Time)
             {
+                //Fade out the alpha if the time is between the end time and the fade end time, else set the alpha to 1.0
+                TextDisplayMesh.Alpha = TextEndTime < Utilities.Time ? 1 - (float)((Utilities.Time - TextEndTime) / (TextEndFadeTime - TextEndTime)) : 1.0f;
+
+
                 TextDisplayMesh.Position = this.Position + new Vector3(0, 13, -2);
                 TextDisplayMesh.Angles = new Angle(this.Angles.Pitch + 180, this.Angles.Yaw + 140, this.Angles.Roll);
                 TextDisplayMesh.Scale = Vector3.One * 4;
@@ -96,12 +102,6 @@ namespace WheelOfSteamGames.Entity
                 Utilities.ViewMatrix = oldView;
                 Utilities.ProjectionMatrix = oldProj;
             }
-        }
-
-
-        public override void Think()
-        {
-            base.Think();
         }
 
         public void LoadDialogue( string dialogueSet )
