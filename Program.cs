@@ -29,8 +29,10 @@ namespace WheelOfSteamGames
             else if (settings.NoBorder) this.WindowState = OpenTK.WindowState.Normal;
 
             engine = new Engine(this, settings ); //Create the engine class that'll do all the heavy lifting
-            engine.OnRenderScene += new Action<FrameEventArgs>(RenderScene);
+            engine.OnRenderSceneOpaque += new Action<FrameEventArgs>(RenderSceneOpaque);
+            engine.OnRenderSceneTranslucent += new Action<FrameEventArgs>(RenderSceneTranslucent);
         }
+
 
         /// <summary>Load resources here.</summary>
         /// <param name="e">Not used.</param>
@@ -79,19 +81,30 @@ namespace WheelOfSteamGames
             SwapBuffers();
         }
 
-        private void RenderScene(FrameEventArgs e)
+        /// <summary>
+        /// Called by the engine when it is time to render opaque renderables
+        /// </summary>
+        /// <param name="e"></param>
+        private void RenderSceneOpaque(FrameEventArgs e)
         {
             //Draw opaque geometry
             MainRoom.Draw();
             OlegEngine.Entity.EntManager.DrawOpaque(e);
 
+            //Draw debug stuff
+            Graphics.DrawDebug();
+        }
+
+        /// <summary>
+        /// Called by the engine when it is time to render potentially-translucent renderables
+        /// </summary>
+        /// <param name="e"></param>
+        void RenderSceneTranslucent(FrameEventArgs e)
+        {
             //Now draw geometry that is potentially transcluent
             GL.Enable(EnableCap.Blend);
             OlegEngine.Entity.EntManager.DrawTranslucent(e);
             GL.Disable(EnableCap.Blend);
-
-            //Draw debug stuff
-            Graphics.DrawDebug();
         }
 
         [STAThread]
