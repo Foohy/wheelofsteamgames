@@ -1,0 +1,58 @@
+//Default lines not associated with a game
+These lines are 'default' lines. They are associated with no specific game.
+Interesting game choice! //This is a comment. These are ignored on a per-line basis
+Well that'll be fun.
+Oh shit.
+I almost feel bad for you.
+Y'know, I'm a bit jealous to be honest.
+Wow of all the games you could've gotten...
+Tell me when you're done so I can play.
+
+//Counter strike source
+240 
+I just switched to appid 240 (Counter strike source)
+Switching appid's happens when there is a line dedicated to JUST the number.
+Make sure to use the knife when running.
+I'll headshot your nerd face.
+
+//Half-Life 2
+220
+Boom, now these lines are about appid 220 (Half-Life 2)
+Say hi to the vorts for me.
+Be careful out there, you're gonna need it.
+
+//Garry's Mod
+4000
+Download Lua Rollercoasters
+Also download Cinema
+Join Tower
+Install all of Foohy's addons
+/votecop
+
+//Left 4 Dead
+500
+Pills here
+Remember to shoot all the cars. ESPECIALLY if their lights are on.
+Kill some zombies!
+
+//Left 4 Dead 2
+550
+Kill some zombies! Again!
+Visit Kiddie Land!
+
+//Half-Life: Opposing Force
+50
+It's like Half-Life but not really.
+gordon is literally the worst.
+
+//Half-Life
+70
+They need you in the test chamberrrrrrrrrr.
+At least you've got a nice suit out of it.
+Beat the game with just the crowbar.
+
+//Revelations 2012
+201070
+Actually THE best game ever.
+You shouldn't need a wheel to decide to play this.
+Tell your friends.

@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entity\act_announcer.cs" />
     <Compile Include="Entity\base_actor.cs" />
     <Compile Include="Entity\ent_camera.cs" />
     <Compile Include="Entity\ent_spinner.cs" />
