@@ -70,15 +70,12 @@ namespace WheelOfSteamGames.Entity
             if (!MainRoom.Started) return;
 
             float Length = CurrentGameText.GetTextLength();
+            float Height = CurrentGameText.GetTextHeight();
+            float Scale = Length / (Utilities.window.Width / 2.5) > 1.0f ? (Utilities.window.Width / 2.5f) / Length : 1;
 
+            CurrentGameText.SetScale(Scale, Scale);
 
-            if (Length / (Utilities.window.Width / 2.5) > 1.0f)
-            {
-                CurrentGameText.SetScale((Utilities.window.Width / 2.5f) / Length, 1);
-            }
-            else CurrentGameText.SetScale(1, 1);
-
-            CurrentGameText.SetPos(Utilities.window.Width - Length * CurrentGameText.ScaleW - 100, (Utilities.window.Height / 2) - (CurrentGameText.GetTextHeight() / 2));
+            CurrentGameText.SetPos(Utilities.window.Width - Length * CurrentGameText.ScaleW - (Utilities.window.Width / 40), (Utilities.window.Height / 2) - (Height / 2 ));
             CurrentGameText.Draw();
         }
 
