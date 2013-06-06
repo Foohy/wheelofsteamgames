@@ -32,7 +32,7 @@ namespace WheelOfSteamGames
 
         private static Material LoadingMat;
         private static Text LoadingText;
-        private static base_actor Actor;
+        private static act_announcer Actor;
         private static Window usernameWindow;
 
         public static void Initialize()
@@ -388,6 +388,7 @@ namespace WheelOfSteamGames
             Spinner.Spawn();
             Spinner.SetAngle(new Angle( 0, 233, 0 ));
             Spinner.SetPos(new Vector3(0, -(float)Spinner.Model.BBox.Negative.Y, 0));
+            Spinner.OnSpinnerStop += new Action<SteamCommunity.Game>(Spinner_OnSpinnerStop);
 
             View.Player.SetPos(new Vector3(-13.50925f, 5.614059f, 2.610255f));
             View.Player.SetAngle(new Angle(0, 0, 0));
@@ -398,13 +399,12 @@ namespace WheelOfSteamGames
             //Ang: 0.9982005f, -0.03713433f, 0.05996396f
 
             //Spawn the meow meow
-            Actor = EntManager.Create<base_actor>();
+            Actor = EntManager.Create<act_announcer>();
             Actor.Spawn();
-            Actor.LoadAnimations("test");
             Actor.SetAnimation("animtest");
             Actor.SetAngle(new Angle( 0, -Spinner.Angles.Yaw, 0));
             Actor.Scale = new Vector3(10, 10, 10);
-            Actor.SetPos(new Vector3(1, -2.5f, 6));
+            Actor.SetPos(new Vector3(1.56478f, -2.5f, 6));
             Actor.ShouldDraw = false;
 
             //Create some hint text
@@ -425,6 +425,16 @@ namespace WheelOfSteamGames
             Menu.HideToLeft();
 
             Menu.OnAcceptPress += new Action(Menu_OnAcceptPress);
+        }
+
+        /// <summary>
+        /// Event for when the spinner stops, so we can retrieve its information and DO STUFF
+        /// </summary>
+        /// <param name="obj">The chosen game</param>
+        static void Spinner_OnSpinnerStop(SteamCommunity.Game game)
+        {
+            Actor.SayLine(game.AppID);
+            Console.WriteLine(string.Format("Landed on \"{0}\" ({1})", game.Name, game.AppID));
         }
 
         static List<SteamCommunity.Game> GetFilteredGames(ReturnCriteria rc)

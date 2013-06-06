@@ -29,6 +29,8 @@ namespace WheelOfSteamGames.Entity
         public float SpeedupTime = 1.2f; //Time to apply the force to spin up
         public bool IsSpinning { get; private set; }
 
+        public event Action<SteamCommunity.Game> OnSpinnerStop;
+
         private double SpeedTime = 0;
         private Vector3 PaddlePositionOffset = new Vector3(0, 5.2f, 0);
         private float LastSoundRegion = 0;
@@ -215,6 +217,7 @@ namespace WheelOfSteamGames.Entity
 
             Paddle.Position = this.Position + PaddlePositionOffset;
             Paddle.Angles = new Angle(this.Angles.Pitch + GetPaddleTurn(this.CurrentAngle), this.Angles.Yaw, this.Angles.Roll);
+            int CurrentRegion = GetRegionFromAngle(CurrentAngle);
 
             //Spin if neccessary
             if (Utilities.Time < SpeedTime + SpeedupTime)
@@ -229,12 +232,11 @@ namespace WheelOfSteamGames.Entity
             {
                 CurrentSpeed = 0;
                 IsSpinning = false;
-                Console.WriteLine("Done!");
 
-                OnStopSpinning(this.CurrentAngle);
+                OnStopSpinning(Games[CurrentRegion]);
             }
 
-            int CurrentRegion = GetRegionFromAngle(CurrentAngle);
+
             if (CurrentRegion != LastSoundRegion)
             {
                 LastSoundRegion = CurrentRegion;
@@ -260,14 +262,11 @@ namespace WheelOfSteamGames.Entity
             return region >= Games.Count ? 0 : region; //Handle wrapping around
         }
 
-        private void OnStopSpinning( float angle )
+        private void OnStopSpinning( SteamCommunity.Game game )
         {
-            Console.WriteLine(GetRegionFromAngle(angle));
-            //Convert the angle to between 0 and 2pi
-            angle = (float)Math.Asin(Math.Sin(angle)) + (float)Math.PI;
-
-            float elementangle = angle / Games.Count;
-
+            //Invoke the event that we've stopped spinning and have got our game
+            if (OnSpinnerStop != null)
+                OnSpinnerStop.Invoke(game);
         }
 
         public override void Draw()
