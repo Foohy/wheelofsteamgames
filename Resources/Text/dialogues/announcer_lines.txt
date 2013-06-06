@@ -24,7 +24,10 @@ Be careful out there, you're gonna need it.
 //Garry's Mod
 4000
 Download Lua Rollercoasters
-Also download Cinema
+Download Cinema
+Download Directional Gravity
+Download Making the Cut
+Download Elevator: Source
 Join Tower
 Install all of Foohy's addons
 /votecop
