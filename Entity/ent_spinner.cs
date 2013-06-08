@@ -237,7 +237,7 @@ namespace WheelOfSteamGames.Entity
             if (CurrentRegion != LastSoundRegion)
             {
                 LastSoundRegion = CurrentRegion;
-                Audio.PlaySound("Resources/Audio/spinner_click.wav", 0.5f, Utilities.Rand.Next(35280, 52920));
+                Audio.PlaySound("Resources/Audio/spinner_click.wav", 0.35f, Utilities.Rand.Next(35280, 52920));
             }
 
             CurrentAngle += CurrentSpeed;
