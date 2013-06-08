@@ -34,7 +34,7 @@ namespace WheelOfSteamGames.Entity
             base.Think();
 
             //Change our frame in accordance to time
-            if (nextFrameTime < Utilities.Time && Animations.Count > 0 && Animations.ContainsKey(CurrentAnimation))
+            if (nextFrameTime < Utilities.Time && Animations.ContainsKey(CurrentAnimation))
             {
                 double delta = Utilities.Time - nextFrameTime;
                 nextFrameTime = Utilities.Time + this.TimePerFrame;
@@ -55,6 +55,10 @@ namespace WheelOfSteamGames.Entity
             }
         }
 
+        /// <summary>
+        /// Load all animations associated with a character into memory
+        /// </summary>
+        /// <param name="name">The 'character name,' otherwise known as the folder name, that holds the animation frames</param>
         public void LoadAnimations(string name)
         {
             try
@@ -76,8 +80,15 @@ namespace WheelOfSteamGames.Entity
             }
         }
 
+        /// <summary>
+        /// Set the animation of the actor
+        /// </summary>
+        /// <param name="name">The name of the animation</param>
         public void SetAnimation(string name)
         {
+            //Don't set the animation if it doesn't exist
+            if (!Animations.ContainsKey(name)) return;
+
             this.CurrentAnimation = name;
             this.CurrentFrame = 0;
         }
