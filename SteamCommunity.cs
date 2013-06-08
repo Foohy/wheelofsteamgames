@@ -162,13 +162,23 @@ namespace WheelOfSteamGames
         public static Dictionary<string, string> GetLocalSaves()
         {
             Dictionary<string, string> Saves = new Dictionary<string, string>();
-            string[] files = Directory.GetFiles(SavesFolder, "* *");
-            foreach (string file in files )
+
+            try
             {
-                string filename = Path.GetFileName(file);
-                 string communityid = filename.Substring(0, 17);
-                string communityname = filename.Substring(18);
-                Saves.Add(communityid, communityname );
+                if (!Directory.Exists(SavesFolder)) Directory.CreateDirectory(SavesFolder);
+
+                string[] files = Directory.GetFiles(SavesFolder, "* *");
+                foreach (string file in files)
+                {
+                    string filename = Path.GetFileName(file);
+                    string communityid = filename.Substring(0, 17);
+                    string communityname = filename.Substring(18);
+                    Saves.Add(communityid, communityname);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed to get local saves! {0}", e.Message);
             }
 
             return Saves;   
