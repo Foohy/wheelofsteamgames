@@ -19,6 +19,7 @@ namespace WheelOfSteamGames
         public Program(Settings settings)
             : base(settings.Width, settings.Height, new GraphicsMode(32, 24, 0, settings.Samples), "Wheel of Vidya Games", settings.WindowMode == WindowState.Fullscreen && settings.NoBorder ? GameWindowFlags.Fullscreen : GameWindowFlags.Default )
         {
+            Utilities.EngineSettings = settings;
             VSync = settings.VSync;
             if (settings.NoBorder)
             {
@@ -28,7 +29,7 @@ namespace WheelOfSteamGames
                 this.WindowState = settings.WindowMode;
             else if (settings.NoBorder) this.WindowState = OpenTK.WindowState.Normal;
 
-            engine = new Engine(this, settings ); //Create the engine class that'll do all the heavy lifting
+            engine = new Engine(this); //Create the engine class that'll do all the heavy lifting
             engine.OnRenderSceneOpaque += new Action<FrameEventArgs>(RenderSceneOpaque);
             engine.OnRenderSceneTranslucent += new Action<FrameEventArgs>(RenderSceneTranslucent);
         }
