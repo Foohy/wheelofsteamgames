@@ -31,6 +31,11 @@ namespace WheelOfSteamGames
             public bool HasHDR;
         }
 
+        /// <summary>
+        /// Called when a singular game is loaded from the community
+        /// </summary>
+        public static event Action<Game> OnLoadGame;
+
         public const string SteamURL = "http://steamcommunity.com/id/{0}/games?tab=all&xml=1";
         public const string StoreURL = "http://store.steampowered.com/api/appdetails/?appids={0}";
         public const string SavesFolder = "Saves/";
@@ -128,19 +133,26 @@ namespace WheelOfSteamGames
             return Games;
         }
 
-        public static List<Game> GetGames(string communityname, string communityid)
+        public static bool GetLoadFromCache(string communityid)
         {
             string filename = GetSave(communityid);
-            if (!string.IsNullOrEmpty(filename) && File.Exists(filename))
+            return !string.IsNullOrEmpty(filename) && File.Exists(filename);
+        }
+
+        public static List<Game> GetGames(string communityname, string communityid, bool RefreshCache=false )
+        {
+            string filename = GetSave(communityid);
+
+            if (RefreshCache || !GetLoadFromCache(communityid))
+            {
+                Console.WriteLine("Loading data from internet!");
+                return GetGamesFromCommunity(communityname);
+            }
+            else
             {
                 Console.WriteLine("Loading data from file!");
                 string json = File.ReadAllText(filename);
                 return JsonConvert.DeserializeObject<List<Game>>(json);
-            }
-            else
-            {
-                Console.WriteLine("Loading data from internet!");
-                return GetGamesFromCommunity(communityname);
             }
         }
 
@@ -253,11 +265,13 @@ namespace WheelOfSteamGames
                         break;  
                 }
             }
+
             Games.Add(CurrentGame); //Add the last game
         }
 
         private static void GetAdditionalInfo( Game game )
-        {     
+        {
+            if (OnLoadGame != null) OnLoadGame(game);
             string jsonString = "";
             Newtonsoft.Json.Linq.JObject infObj = null;
             try

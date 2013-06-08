@@ -24,7 +24,9 @@ namespace WheelOfSteamGames
         public static bool Started = false;
         public static bool Loaded = false;
         public static bool IsLoadingData = false;
+        public static bool IsCreatingCache = false;
 
+        private static string CurrentGame = "No Game";
         private static float StartupDelay = 0.0f;
         private static GUI.PauseMenu Menu;
         public delegate bool ReturnCriteria(SteamCommunity.Game game);
@@ -32,6 +34,8 @@ namespace WheelOfSteamGames
 
         private static Material LoadingMat;
         private static Text LoadingText;
+        private static Text LongLoadingText;
+        private static Text CurrentGameText;
         private static act_announcer Actor;
         private static Window usernameWindow;
 
@@ -49,6 +53,7 @@ namespace WheelOfSteamGames
 
             Utilities.window.Keyboard.KeyDown += new EventHandler<OpenTK.Input.KeyboardKeyEventArgs>(Keyboard_KeyDown);
             GUIManager.PostDrawHUD += new GUIManager.OnDrawHUD(GUIManager_PostDrawHUD);
+            SteamCommunity.OnLoadGame += new Action<SteamCommunity.Game>(SteamCommunity_OnLoadGame);
 
             //On startup, ask for steam community username
             CreateUserSelectDialogue();
@@ -202,6 +207,8 @@ namespace WheelOfSteamGames
         {
             if (LoadingMat == null) { LoadingMat = Resource.GetMaterial("gui/loading"); }
             if (LoadingText == null) { LoadingText = new Text("game_large", "Loading data..."); LoadingText.SetScale(0.25f, 0.25f); }
+            if (LongLoadingText == null) { LongLoadingText = new Text("windowtitle", "Loading/Caching game data from the internet. Please be patient, this only happens once." ); }
+            if (CurrentGameText == null) { CurrentGameText = new Text("title", ""); }
 
             if (IsLoadingData)
             {
@@ -210,7 +217,23 @@ namespace WheelOfSteamGames
                 Surface.DrawRect(Utilities.window.Width - (LoadingSize + LoadingOffset), Utilities.window.Height - (LoadingSize + LoadingOffset), LoadingSize, LoadingSize);
                 LoadingText.SetPos(Utilities.window.Width - (LoadingText.GetTextLength() * LoadingText.ScaleW + LoadingSize + LoadingOffset + 10), Utilities.window.Height - (LoadingText.GetTextHeight() / 2 + LoadingSize / 2 + LoadingOffset));
                 LoadingText.Draw();
+
+                if (IsCreatingCache)
+                {
+                    LongLoadingText.SetPos(Utilities.window.Width/2 - (LongLoadingText.GetTextLength() / 2), Utilities.window.Height/2 - (LongLoadingText.GetTextHeight() / 2));
+                    LongLoadingText.Draw();
+
+                    CurrentGameText.SetPos(LongLoadingText.X, LongLoadingText.Y + LongLoadingText.GetTextHeight() + 2);
+                    CurrentGameText.SetText(CurrentGame);
+                    CurrentGameText.Draw();
+                }
             }
+        }
+
+        //If we're loading some data from the ~internet~ inform the user while they wait
+        static void SteamCommunity_OnLoadGame(SteamCommunity.Game obj)
+        {
+            CurrentGame = obj.Name;
         }
 
         delegate bool loadIsValidDel( string name, out string failReason );
@@ -285,14 +308,16 @@ namespace WheelOfSteamGames
             connectPanel.ShouldDrawChildren = false;     
         }
 
-        delegate List<SteamCommunity.Game> LoadSteamDataDel( string communityName, string communityID );
-        public static void BeginLoadData( string CommunityName, string CommunityID )
+        delegate List<SteamCommunity.Game> LoadSteamDataDel( string communityName, string communityID, bool refresh=false );
+        public static void BeginLoadData( string CommunityName, string CommunityID, bool RefreshCache = false )
         {
+            IsCreatingCache = RefreshCache ? RefreshCache : !SteamCommunity.GetLoadFromCache(CommunityID);
+
             Menu.HideToLeft();
 
             IsLoadingData = true;
             LoadSteamDataDel loadFunc = new LoadSteamDataDel(SteamCommunity.GetGames);
-            IAsyncResult item = loadFunc.BeginInvoke(CommunityName, CommunityID, null, null);
+            IAsyncResult item = loadFunc.BeginInvoke(CommunityName, CommunityID, IsCreatingCache, null, null);
 
             TaskManager.AddTask(item, (IAsyncResult res) =>
                 {
