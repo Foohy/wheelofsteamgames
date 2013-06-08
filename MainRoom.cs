@@ -350,6 +350,7 @@ namespace WheelOfSteamGames
                 if (e.Key == OpenTK.Input.Key.Space)
                 {
                     Spinner.Spin(0.095f);
+                    Actor.SetTransitionAnimation("announcer_player_to_wheel", "announcer_idle_wheel");
                     HintManager.RemoveHintNice("spin_controls_hint");
                 }
 
@@ -426,10 +427,10 @@ namespace WheelOfSteamGames
             //Spawn the meow meow
             Actor = EntManager.Create<act_announcer>();
             Actor.Spawn();
-            Actor.SetAnimation("animtest");
-            Actor.SetAngle(new Angle( 0, -Spinner.Angles.Yaw, 0));
+            Actor.SetAnimation("announcer_idle_player");
+            Actor.SetAngle(new Angle( 0, 270, 0));
             Actor.Scale = new Vector3(10, 10, 10);
-            Actor.SetPos(new Vector3(1.56478f, -2.5f, 6));
+            Actor.SetPos(new Vector3(1.56478f, -0.6f, 6));
             Actor.ShouldDraw = false;
 
             //Create some hint text
@@ -458,6 +459,7 @@ namespace WheelOfSteamGames
         /// <param name="obj">The chosen game</param>
         static void Spinner_OnSpinnerStop(SteamCommunity.Game game)
         {
+            Actor.SetTransitionAnimation("announcer_wheel_to_player", "announcer_idle_player");
             Actor.SayLine(game.AppID);
             Console.WriteLine(string.Format("Landed on \"{0}\" ({1})", game.Name, game.AppID));
         }
