@@ -38,15 +38,15 @@ namespace WheelOfSteamGames.Entity
             //Create our FBO to do some offscreen rendering
             SpeechFBO = new FBO(LineBubbleRes, LineBubbleRes, false);
 
-            this.LoadAnimations("test");
+            this.LoadAnimations("Announcer");
             this.LoadDialogue("announcer_lines");
 
             //We need a custom view matrix to draw our speech bubble in a way that makes sense
             Line2D3DMatrix = Matrix4.CreateOrthographicOffCenter(0, LineBubbleRes, 0, LineBubbleRes, Utilities.NearClip, Utilities.FarClip);
 
             TextMat = new Material(SpeechFBO.RenderTexture, Resource.GetProgram("default"));
-            TextMat.Properties.AlphaTest = true;
-            TextMat.Properties.NoCull = true;
+            //TextMat.Properties.AlphaTest = true;
+            //TextMat.Properties.NoCull = true;
             
             //Mesh to display the text
             TextDisplayMesh = EngineResources.CreateNewQuadMesh();
@@ -67,8 +67,8 @@ namespace WheelOfSteamGames.Entity
                 TextDisplayMesh.Alpha = TextEndTime < Utilities.Time ? 1 - (float)((Utilities.Time - TextEndTime) / (TextEndFadeTime - TextEndTime)) : 1.0f;
 
 
-                TextDisplayMesh.Position = this.Position + new Vector3(0, 13, -2);
-                TextDisplayMesh.Angles = new Angle(this.Angles.Pitch + 180, this.Angles.Yaw + 140, this.Angles.Roll);
+                TextDisplayMesh.Position = this.Position + new Vector3(-1, 12, -3);
+                TextDisplayMesh.Angles = new Angle(this.Angles.Pitch + 180, this.Angles.Yaw, this.Angles.Roll);
                 TextDisplayMesh.Scale = Vector3.One * 4;
                 TextDisplayMesh.mat = TextMat;
                 TextDisplayMesh.Draw();

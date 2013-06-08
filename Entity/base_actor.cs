@@ -16,7 +16,10 @@ namespace WheelOfSteamGames.Entity
         public int CurrentFrame = 0;
         public string CurrentAnimation = "idle";
         public Dictionary<string, int[]> Animations = new Dictionary<string, int[]>();
+        public bool IsTransitioning = false;
+        public int CurrentTransitionIndex = 0;
 
+        private string[] TransitionAnimations = new string[2];
         private double nextFrameTime = 0;
         public override void Init()
         {
@@ -36,6 +39,17 @@ namespace WheelOfSteamGames.Entity
                 double delta = Utilities.Time - nextFrameTime;
                 nextFrameTime = Utilities.Time + this.TimePerFrame;
                 CurrentFrame += 1 + (int)Math.Floor(delta / this.TimePerFrame);
+
+                if (this.IsTransitioning && CurrentFrame >= this.Animations[CurrentAnimation].Length && CurrentTransitionIndex < TransitionAnimations.Length-1)
+                {
+                     CurrentTransitionIndex += 1;
+                    this.SetAnimation(TransitionAnimations[CurrentTransitionIndex]);
+
+                    //If we've reached the last animation in our queued animation, stop transitioning
+                    if (CurrentTransitionIndex <= TransitionAnimations.Length)
+                        this.IsTransitioning = false;
+                }
+
                 CurrentFrame = CurrentFrame < this.Animations[this.CurrentAnimation].Length ? CurrentFrame : 0;
                 this.Mat.Properties.BaseTexture = this.Animations[this.CurrentAnimation][CurrentFrame];
             }
@@ -66,6 +80,20 @@ namespace WheelOfSteamGames.Entity
         {
             this.CurrentAnimation = name;
             this.CurrentFrame = 0;
+        }
+
+        /// <summary>
+        /// Queue up multiple animations, to be set in order when the first one finishes
+        /// </summary>
+        /// <param name="Animations"></param>
+        public void SetTransitionAnimation(string From, string To)
+        {
+            TransitionAnimations[0] = From;
+            TransitionAnimations[1] = To;
+
+            this.IsTransitioning = true;
+            this.CurrentTransitionIndex = 0;
+            this.SetAnimation(From);
         }
 
         private void LoadSingleAnimation(string animation, string folder )
