@@ -11,6 +11,9 @@ using OlegEngine.Entity;
 using OlegEngine.GUI;
 using System.IO;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
 namespace WheelOfSteamGames.Entity
 {
     class act_announcer : base_actor
@@ -18,8 +21,8 @@ namespace WheelOfSteamGames.Entity
         public const string DialoguesDir = "Resources/Text/dialogues/";
         public const double TextRemainTime = 6.0f;
         public const double TextFadeTime = 1.0f;
-        public Dictionary<int, string[]> Lines = new Dictionary<int, string[]>();
 
+        private List<App> AppLines = new List<App>();
         private FBO SpeechFBO; //This is where we'll render out the speech bubble for one frame and display it just as a texture
         private string curString;
         private string lastString;
@@ -30,6 +33,20 @@ namespace WheelOfSteamGames.Entity
 
         private double TextEndTime = 0;
         private double TextEndFadeTime = 0;
+
+        //Stuff for dialogue
+        class Line
+        {
+            public string[] GameLines;
+            public string ReactionAnim;
+            public string AdditionalInfo; //Comments, etc.
+        }
+
+        class App
+        {
+            public int AppID;
+            public Line[] Lines;
+        }
 
         public override void Init()
         {
@@ -109,32 +126,8 @@ namespace WheelOfSteamGames.Entity
             try
             {
                 string file = DialoguesDir + dialogueSet + ".txt";
-                string[] lines = File.ReadAllLines(file);
-
-                int curAppID = -1;
-                List<string> CurLinesList = new List<string>();
-                foreach (string line in lines)
-                {
-                    //Remove comments
-                    int index = line.IndexOf("//");
-                    string lineClean = index > -1 ? line.Remove(index) : line;
-
-                    int appid = -1;
-                    if (int.TryParse(lineClean, out appid) && appid != curAppID)
-                    {
-                        this.Lines.Add(curAppID, CurLinesList.ToArray());
-                        CurLinesList.Clear();
-                        curAppID = appid;
-                    }
-                    else if (!string.IsNullOrEmpty( lineClean ) && !string.IsNullOrWhiteSpace( lineClean ) )
-                    {
-                        CurLinesList.Add(lineClean);
-                    }
-                }
-
-                //Add any game lines left
-                if (CurLinesList.Count > 0)
-                    this.Lines.Add(curAppID, CurLinesList.ToArray());
+                string json = File.ReadAllText(file);
+                AppLines = JsonConvert.DeserializeObject<List<App>>(json);
             }
             catch (Exception e)
             {
@@ -144,11 +137,25 @@ namespace WheelOfSteamGames.Entity
 
         public void SayLine(int AppID)
         {
-            int ID = Lines.ContainsKey(AppID) ? AppID : -1;
+            App app = FindAppByID(AppID);
+            if (app == null) return;
 
-            string Line = Lines[ID][Utilities.Rand.Next( 0, Lines[ID].Length)];
+            string Line = app.Lines[Utilities.Rand.Next(0, app.Lines.Length)].GameLines[0]; //TODO: Add support for multiple pages of text
             SayLine(Line);
         }
+
+        private App FindAppByID(int id, bool def=false)
+        {
+            foreach (App app in AppLines)
+            {
+                if (app.AppID == id) return app;
+            }
+            if (!def)
+                return FindAppByID(0, true);
+            else return null;
+        }
+
+        
 
         private void SayLine(string str)
         {
@@ -175,5 +182,36 @@ namespace WheelOfSteamGames.Entity
             Surface.SetDrawColor(0, 0, 0);
             Surface.DrawWrappedText("windowtitle", this.curString, 25, 45, LineBubbleRes - 80);
         }
+
+        
+    }
+
+    public class NamespaceMigrationSerializationBinder : DefaultSerializationBinder
+    {
+        private readonly INamespaceMigration[] _migrations;
+
+        public NamespaceMigrationSerializationBinder(params INamespaceMigration[] migrations)
+        {
+            _migrations = migrations;
+        }
+
+        public override Type BindToType(string assemblyName, string typeName)
+        {
+            var migration = _migrations.SingleOrDefault(p => p.FromAssembly == assemblyName && p.FromType == typeName);
+            if (migration != null)
+            {
+                return migration.ToType;
+            }
+            return base.BindToType(assemblyName, typeName);
+        }
+    }
+
+    public interface INamespaceMigration
+    {
+        string FromAssembly { get; }
+
+        string FromType { get; }
+
+        Type ToType { get; }
     }
 }

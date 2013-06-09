@@ -1,61 +1,418 @@
-//Default lines not associated with a game
-These lines are 'default' lines. They are associated with no specific game.
-Interesting game choice! //This is a comment. These are ignored on a per-line basis
-Well that'll be fun.
-Oh shit.
-I almost feel bad for you.
-Y'know, I'm a bit jealous to be honest.
-Wow of all the games you could've gotten...
-Tell me when you're done so I can play.
-
-//Counter strike source
-240 
-I just switched to appid 240 (Counter strike source)
-Switching appid's happens when there is a line dedicated to JUST the number.
-Make sure to use the knife when running.
-I'll headshot your nerd face.
-
-//Half-Life 2
-220
-Boom, now these lines are about appid 220 (Half-Life 2)
-Say hi to the vorts for me.
-Be careful out there, you're gonna need it.
-
-//Garry's Mod
-4000
-Download Lua Rollercoasters
-Download Cinema
-Download Directional Gravity
-Download Making the Cut
-Download Elevator: Source
-Join Tower
-Install all of Foohy's addons
-/votecop
-
-//Left 4 Dead
-500
-Pills here
-Remember to shoot all the cars. ESPECIALLY if their lights are on.
-Kill some zombies!
-
-//Left 4 Dead 2
-550
-Kill some zombies! Again!
-Visit Kiddie Land!
-
-//Half-Life: Opposing Force
-50
-It's like Half-Life but not really.
-gordon is literally the worst.
-
-//Half-Life
-70
-They need you in the test chamberrrrrrrrrr.
-At least you've got a nice suit out of it.
-Beat the game with just the crowbar.
-
-//Revelations 2012
-201070
-Actually THE best game ever.
-You shouldn't need a wheel to decide to play this.
-Tell your friends.
+[
+  {
+    "AppID": 10,
+    "Lines": [
+      {
+        "GameLines": [
+          "Ah. Good old Counter-Strike. ",
+          "The shining pillar of the old-school modding community. ",
+          "It was totally a fluke by the way, no one was smart enough to make a game like CS on purpose."
+        ],
+        "ReactionAnim": "happy",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "Hm. CS huh?"
+        ],
+        "ReactionAnim": "happy",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "Hm. CS huh?",
+          "Y'know De_Dust? A fellow named David Johnston worked on it.",
+          "By his own admission he had no idea what he was doing when he made dust.",
+          "Funny how that works out, isnt it?"
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "Yikes. Counter-Strike? Try not to rile up the people that still play that game.",
+          "They will tear you limb from limb. Almost happened to me once!"
+        ],
+        "ReactionAnim": "scared",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 20,
+    "Lines": [
+      {
+        "GameLines": [
+          "Oh, Team Fortress Classic!",
+          "Talk about old school huh? Well enjoy!"
+        ],
+        "ReactionAnim": "neutral",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "TFC? Wow talk about a blast from the past!",
+          "Did you know that a group of modders, whom Robin Walker was a part of...",
+          "originally made tfc for Quake? It's true!"
+        ],
+        "ReactionAnim": "suprised",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "Ah, Team Fortress Classic. Here's a fun fact for you:",
+          "The reason TFC uses nails as projectiles is a holdover from the original Quake mod!",
+          "It used nails to get around engine limitations. Crazy huh?"
+        ],
+        "ReactionAnim": "happy",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 30,
+    "Lines": [
+      {
+        "GameLines": [
+          "Day of Defeat? Eh... Well I hope you have fun."
+        ],
+        "ReactionAnim": "disappointed",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "DoD? Do people even still play that?"
+        ],
+        "ReactionAnim": "confused",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 31,
+    "Lines": [
+      {
+        "GameLines": [
+          "Deathmatch Classic! Wow, people bought that?"
+        ],
+        "ReactionAnim": "confused",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "I don't see how it gets any more classic than deathmatch, but hey."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "Cool. I really can't say anything about a Deathmatch game....",
+          "Have fun murdering your fellow man I suppose!"
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 50,
+    "Lines": [
+      {
+        "GameLines": [
+          "Half-Life: Opposing Force! Gearbox Studios made it, you know.",
+          "Kind of a far call from what they do now, huh?"
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "You know, you can play this co-op with your friends if you download Sven Coop.",
+          "Just an option. Y'know. In case you're into that."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 231200,
+    "Lines": [
+      {
+        "GameLines": [
+          "Kentucky Route Zero! Not as much of a redneck simulator as it sounds like. ",
+          "Suprisingly."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 65930,
+    "Lines": [
+      {
+        "GameLines": [
+          "Oh. The OTHER xcom game. Well have fun I suppose."
+        ],
+        "ReactionAnim": "Disappointed",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 200470,
+    "Lines": [
+      {
+        "GameLines": [
+          "TKOM? What even is that?"
+        ],
+        "ReactionAnim": "Confused",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 41010,
+    "Lines": [
+      {
+        "GameLines": [
+          "Serious Sam The Second Encounter! Wow! Amazing!",
+          "Whoa!",
+          "Tubular!",
+          "I've run out of dumb exclamations! Go and play your dumb game about shooting things."
+        ],
+        "ReactionAnim": "Confused",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 4000,
+    "Lines": [
+      {
+        "GameLines": [
+          "Garry's Mod! May I recommend one of the many fine products from PixelTail Games?"
+        ],
+        "ReactionAnim": "Happy",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "GMod, then? Try to avoid the servers full of shrieking 12 year olds."
+        ],
+        "ReactionAnim": "Happy",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "Gmod. Oh I've got a good story about this!",
+          "So I was playing TTT right, and I was a detective. ",
+          "And then someone shot me for no reason. Great game. For idiots."
+        ],
+        "ReactionAnim": "Angry",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 41070,
+    "Lines": [
+      {
+        "GameLines": [
+          "Serious Sam 3 : BFE!.... hey what does the BFE stand for?",
+          "Basically Fried Eggs?",
+          "Bountious Frolicking Ears?",
+          "Before First Encounter?",
+          "...wait no that last one is really dumb, ignore me."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 113020,
+    "Lines": [
+      {
+        "GameLines": [
+          "Monaco! Get to it."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 219680,
+    "Lines": [
+      {
+        "GameLines": [
+          "Proteus. You actually own Proteus?",
+          "You paid $10 or however much to frolick in a blocky chunk of virtual meadow?",
+          "Please make better fiscal decisions from now on. I'm disappointed in you."
+        ],
+        "ReactionAnim": "Disappointed",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 224260,
+    "Lines": [
+      {
+        "GameLines": [
+          "No More Room In Hell! I'm still suprised this game actually was released at all.",
+          "It was in development as a mod for the better part of 4 years! Talk about dedication."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 206190,
+    "Lines": [
+      {
+        "GameLines": [
+          "Gunpoint! Wow you lucky dog! ",
+          "Of all the indie games on steam you land on one of the 10 legtimately good ones!",
+          "Well I hope you enjoy yourself."
+        ],
+        "ReactionAnim": "Happy",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 220780,
+    "Lines": [
+      {
+        "GameLines": [
+          "Thomas Was Alone, huh?",
+          "It's amazing how much mileage you can get out of three colored blocks."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 230410,
+    "Lines": [
+      {
+        "GameLines": [
+          "Ah, Warframe. Grab a few friends if you can!"
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 237570,
+    "Lines": [
+      {
+        "GameLines": [
+          "Penny Arcade's On The Rain-Slick Preci.... man this is a long title. Have fun."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 206420,
+    "Lines": [
+      {
+        "GameLines": [
+          "Saints Row IV! You know, the appid for this game ends in 420.",
+          "Weirdly appropriate."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 225220,
+    "Lines": [
+      {
+        "GameLines": [
+          "Nascar: The Game 2013. God damn it really?",
+          "Look i've got like 2000 other games to write dialogue for already. ",
+          "please do not buy any more games, im gonna die if I keep having to do this."
+        ],
+        "ReactionAnim": "Disappointed",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 230620,
+    "Lines": [
+      {
+        "GameLines": [
+          "Lords..of...Football... wait hold on, what? Let me google this.",
+          "Ahahah holy crap the website has a football player kneeling down on one leg all dramatic like!",
+          "And he's being struck by a friggen' bolt of lightning. Christ this is a weird game."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 219740,
+    "Lines": [
+      {
+        "GameLines": [
+          "Oh no, Don't Starve!? ",
+          "Brrrr.... I still have nightmares from the first night I went through in that game...."
+        ],
+        "ReactionAnim": "Scared",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 214420,
+    "Lines": [
+      {
+        "GameLines": [
+          "Evolve. I honestly have no idea what this is. ",
+          "It's too broad of a term to search, but have fun I guess."
+        ],
+        "ReactionAnim": "Confused",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 236790,
+    "Lines": [
+      {
+        "GameLines": [
+          "Agricultural Simula- Wait hold on is this a farming simulator? No.",
+          "NO."
+        ],
+        "ReactionAnim": "Angry",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 218620,
+    "Lines": [
+      {
+        "GameLines": [
+          "Payday 2!... or is it PAYDAY 2?",
+          "What's the legal spelling of that? I don't want lawyers at my door."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  }
+]
