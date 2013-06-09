@@ -52,6 +52,8 @@ namespace WheelOfSteamGames.Entity
         {
             base.Init();
 
+            this.RenderMode = RenderModes.Translucent;
+
             //Create our FBO to do some offscreen rendering
             SpeechFBO = new FBO(LineBubbleRes, LineBubbleRes, false);
 
@@ -84,9 +86,9 @@ namespace WheelOfSteamGames.Entity
                 TextDisplayMesh.Alpha = TextEndTime < Utilities.Time ? 1 - (float)((Utilities.Time - TextEndTime) / (TextEndFadeTime - TextEndTime)) : 1.0f;
 
 
-                TextDisplayMesh.Position = this.Position + new Vector3(-1, 12, -3);
+                TextDisplayMesh.Position = this.Position + new Vector3(-5, 16, 0);
                 TextDisplayMesh.Angles = new Angle(this.Angles.Pitch + 180, this.Angles.Yaw, this.Angles.Roll);
-                TextDisplayMesh.Scale = Vector3.One * 4;
+                TextDisplayMesh.Scale = Vector3.One * 8;
                 TextDisplayMesh.mat = TextMat;
                 TextDisplayMesh.Draw();
             }
@@ -184,34 +186,5 @@ namespace WheelOfSteamGames.Entity
         }
 
         
-    }
-
-    public class NamespaceMigrationSerializationBinder : DefaultSerializationBinder
-    {
-        private readonly INamespaceMigration[] _migrations;
-
-        public NamespaceMigrationSerializationBinder(params INamespaceMigration[] migrations)
-        {
-            _migrations = migrations;
-        }
-
-        public override Type BindToType(string assemblyName, string typeName)
-        {
-            var migration = _migrations.SingleOrDefault(p => p.FromAssembly == assemblyName && p.FromType == typeName);
-            if (migration != null)
-            {
-                return migration.ToType;
-            }
-            return base.BindToType(assemblyName, typeName);
-        }
-    }
-
-    public interface INamespaceMigration
-    {
-        string FromAssembly { get; }
-
-        string FromType { get; }
-
-        Type ToType { get; }
     }
 }
