@@ -15,8 +15,7 @@ out vec4 gl_FragColor;
 void main()
 {
 	vec2 flipped = vec2(ex_UV.x, -ex_UV.y);
-    float Depth = texture(sampler_shadow, flipped);
+    float Depth = texture(sampler_shadow, flipped).x;
     Depth = 1.0 - (1.0 - Depth) * 25.0;
     gl_FragColor = vec4(Depth);
-	//gl_FragColor = texture2D( sampler, ex_UV.xy).xyz;
 }
