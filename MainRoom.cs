@@ -386,15 +386,24 @@ namespace WheelOfSteamGames
         private static void SetUpScene()
         {
             //Load the world
-            WorldMesh = Resource.GetMesh("floor.obj");
-            WorldMesh.mat = Resource.GetMaterial("engine/white");
+            WorldMesh = Resource.GetMesh("stage.obj");
+            WorldMesh.mat = Resource.GetMaterial("models/stage");
+
+            //Turn on the lights
+            DirectionalLight light = new DirectionalLight();
+            light.AmbientIntensity = 0.4f;
+            light.DiffuseIntensity = 0.9f;
+            light.Color = new Vector3(0.845f, 0.745f, 0.745f);  //new Vector3(0.745f, 0.820f, 0.847f); 
+            light.Direction = new Vector3(0.0f, -1.0f, -1.0f);
+            light.Direction.Normalize();
+            LightingTechnique.SetEnvironmentLight(light);
+            LightingTechnique.EnableEnvironmentLight(false);
 
             ent_pointlight pointlight = EntManager.Create<ent_pointlight>();
             pointlight.Spawn();
             pointlight.AmbientIntensity = 0.4f;
             pointlight.DiffuseIntensity = 20.0f; //0.85f
             pointlight.Color = new Vector3(1.0f, 0.5f, 0.00f);
-            //pointlight.SetPos(new Vector3(-2.00f, 2.421f, -14.90f));
             pointlight.Linear = 2.7f;
             pointlight.Enabled = false;
 
@@ -404,22 +413,22 @@ namespace WheelOfSteamGames
             spotlight.Color = new Vector3(1.0f, 1.0f, 1.0f);
             spotlight.Constant = 1.0f;
             spotlight.Cutoff = 20.0f;
-            spotlight.SetAngle( new Angle(-34.31889f, -48.2127f, -45.8805f) );
-            spotlight.SetPos(new Vector3(-10.22733f, 17.82458f, 12.54623f));
+            spotlight.SetAngle( new Angle(-42.2f, -110.9349f, 0) );
+            spotlight.SetPos(new Vector3(7.56424f, 22.80356f, 33.25445f));
             spotlight.Enabled = false;
 
             Audio.Precache("Resources/Audio/light_on.wav");
 
             Spinner = EntManager.Create<ent_spinner>();
             Spinner.Spawn();
-            Spinner.SetAngle(new Angle( 0, 233, 0 ));
-            Spinner.SetPos(new Vector3(0, -(float)Spinner.Model.BBox.Negative.Y, 0));
+            Spinner.SetAngle(new Angle( 0, -90, 0 ));
+            Spinner.SetPos(new Vector3(-2.8f, -(float)Spinner.Model.BBox.Negative.Y, 18));
             Spinner.OnSpinnerStop += new Action<SteamCommunity.Game>(Spinner_OnSpinnerStop);
 
-            View.Player.SetPos(new Vector3(-13.50925f, 5.614059f, 2.610255f));
-            View.Player.SetAngle(new Angle(0, 0, 0));
-            //View.Player.SetAngle(new Vector3(0.9982005f, -0.03713433f, 0.05996396f));
-            //View.Player.SetAngle( new Angle( 57.19268f, -2.12764f, 3.435682f ) );
+            View.Player.SetPos(new Vector3(0.807714f, 10.01533f, 50.94458f));
+            View.Player.SetAngle(new Angle(-3.26675f, -90.13329f, 0));
+            //View.Player.SetPos(new Vector3(-13.50925f, 5.614059f, 2.610255f));
+            //View.Player.SetAngle(new Angle(0, 0, 0));
             //Notable camera positions
             //Pos: -13.50925f, 5.614059f, 2.610255
             //Ang: 0.9982005f, -0.03713433f, 0.05996396f
@@ -428,9 +437,9 @@ namespace WheelOfSteamGames
             Actor = EntManager.Create<act_announcer>();
             Actor.Spawn();
             Actor.SetAnimation("announcer_idle_player");
-            Actor.SetAngle(new Angle( 0, 270, 0));
+            Actor.SetAngle(new Angle( 0, 0, 0));
             Actor.Scale = new Vector3(10, 10, 10);
-            Actor.SetPos(new Vector3(1.56478f, -0.6f, 6));
+            Actor.SetPos(new Vector3(Spinner.Position.X + 8, -0.6f, Spinner.Position.Z));
             Actor.ShouldDraw = false;
 
             //Create some hint text
@@ -526,7 +535,7 @@ namespace WheelOfSteamGames
             if (spotlight != null && Utilities.window.Keyboard[OpenTK.Input.Key.Q])
             {
                 Console.WriteLine(View.Player.Position);
-                Console.WriteLine(View.ViewNormal);
+                Console.WriteLine(View.Angles);
 
                 spotlight.SetAngle(View.Angles);
                 spotlight.SetPos(View.Player.Position);
@@ -539,6 +548,7 @@ namespace WheelOfSteamGames
                 spotlight.Enabled = true;
                 Audio.PlaySound("Resources/Audio/light_on.wav");
                 Actor.ShouldDraw = true;
+                LightingTechnique.EnableEnvironmentLight(true);
             }
         }
 
