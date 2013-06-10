@@ -166,6 +166,8 @@ namespace WheelOfSteamGames.Entity
             }
 
             int tex = Utilities.LoadTexture(underlay);
+            underlay.Dispose();
+
             this.Wheel.mat.Properties.BaseTexture = tex;
         }
         public static System.Drawing.Bitmap ResizeImage(System.Drawing.Bitmap imgToResize, int width, int height)
