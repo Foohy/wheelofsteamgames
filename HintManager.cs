@@ -37,9 +37,9 @@ namespace WheelOfSteamGames
                 Delay = (float)Utilities.Time + delay;
                 Duration = Delay + duration;
 
-                float HintScale = (float)Utilities.window.Height / 800f;
+                float HintScale = (float)Utilities.window.Height / 700f;
                 hintText.SetScale(HintScale, HintScale);
-                hintText.SetPos((Utilities.window.Width / 2) - (hintText.GetTextLength() / 2) * hintText.ScaleW, -hintText.GetTextHeight());
+                hintText.SetPos((Utilities.window.Width / 2) - (hintText.GetTextLength() / 2) * hintText.ScaleW, Utilities.window.Height + 10);
 
                 Name = UniqueName;
             }
@@ -63,13 +63,13 @@ namespace WheelOfSteamGames
             {
                 Hint h = HintQueue[i];
 
-                if (Utilities.Time > h.Delay )
+                if (Utilities.Time > h.Delay)
                 {
                     if (Utilities.Time > h.Duration)
                     {
-                        h.YReal = -h.hintText.GetTextHeight() - 10;
+                        h.YReal = Utilities.window.Height + 10;
 
-                        if ( Math.Abs(h.YSmooth - h.YReal) > 0.5 )
+                        if (Math.Abs(h.YSmooth - h.YReal) > 0.5)
                         {
                             h.YSmooth = Utilities.Lerp(h.YSmooth, h.YReal, (float)Utilities.Frametime * MoveSpeed);
                         }
@@ -81,13 +81,14 @@ namespace WheelOfSteamGames
                     }
                     else
                     {
-                        h.YReal = h.hintText.GetTextHeight() + 10;
+                        h.YReal = Utilities.window.Height - (h.hintText.GetTextHeight() + 10);
                         h.YSmooth = Utilities.Lerp(h.YSmooth, h.YReal, (float)Utilities.Frametime * MoveSpeed);
                     }
 
                     h.hintText.SetPos(h.hintText.X, h.YSmooth);
-                    h.hintText.Draw(); 
+                    h.hintText.Draw();
                 }
+                else h.YReal = h.YSmooth = Utilities.window.Height + 10;
             }
         }
 
