@@ -347,7 +347,7 @@ namespace WheelOfSteamGames
         {
             if (Loaded && !IsLoadingData)
             {
-                if (e.Key == OpenTK.Input.Key.Space)
+                if (e.Key == OpenTK.Input.Key.Space && !Spinner.IsSpinning)
                 {
                     Spinner.Spin(0.095f);
                     Actor.SetTransitionAnimation("announcer_player_to_wheel", "announcer_idle_wheel");
