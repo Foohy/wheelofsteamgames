@@ -29,6 +29,12 @@ namespace WheelOfSteamGames
             public bool HasAchievements;
             public bool HasLevelEditor;
             public bool HasHDR;
+
+            public static Game Default = new Game()
+            {
+                AppID = -1,
+                Name = "NO GAME",
+            };
         }
 
         /// <summary>

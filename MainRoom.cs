@@ -349,8 +349,15 @@ namespace WheelOfSteamGames
             {
                 if (e.Key == OpenTK.Input.Key.Space && !Spinner.IsSpinning)
                 {
-                    Spinner.Spin(0.095f);
-                    Actor.SetTransitionAnimation("announcer_player_to_wheel", "announcer_idle_wheel");
+                    if (Spinner.Games.Count > 0)
+                    {
+                        Spinner.Spin(0.095f);
+                        Actor.SetTransitionAnimation("announcer_player_to_wheel", "announcer_idle_wheel");
+                    }
+                    else
+                    {
+                        Actor.SayLine("Woah there tiger, you don't have any games on the board!");
+                    }
                     HintManager.RemoveHintNice("spin_controls_hint");
                 }
 

@@ -154,7 +154,7 @@ namespace WheelOfSteamGames.Entity
             System.Drawing.Bitmap underlay = new System.Drawing.Bitmap("Resources/Materials/models/spinner_wheel.png");
             underlay = ResizeImage(underlay, underlay.Width * TextureScale, underlay.Height * TextureScale);
 
-            if (underlay != null)
+            if (underlay != null && games.Count > 0)
             {
                 System.Drawing.Graphics gU = System.Drawing.Graphics.FromImage(underlay);
                 gU.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
@@ -207,17 +207,22 @@ namespace WheelOfSteamGames.Entity
             return ((float)Math.Cos(angle / (this.Games.Count / 4)) * 10) / Utilities.F_RAD2DEG;
         }
 
+        public SteamCommunity.Game GetCurrentGame( int CurRegion )
+        {
+            return CurRegion > -1 ? Games[CurRegion] : SteamCommunity.Game.Default;
+        }
+
         public override void Think()
         {
             Wheel.Position = this.Position;
             Wheel.Angles = this.Angles + new Angle(this.CurrentAngle * Utilities.F_RAD2DEG, 0, 0);
 
-            if (Games == null || Games.Count <= 0) return;
+            if (Games == null) return;
 
             Paddle.Position = this.Position + PaddlePositionOffset;
             Paddle.Angles = new Angle(this.Angles.Pitch + GetPaddleTurn(this.CurrentAngle), this.Angles.Yaw, this.Angles.Roll);
             int CurrentRegion = GetRegionFromAngle(CurrentAngle);
-
+            SteamCommunity.Game CurrentGame = GetCurrentGame(CurrentRegion);
             //Spin if neccessary
             if (Utilities.Time < SpeedTime + SpeedupTime)
             {
@@ -232,7 +237,7 @@ namespace WheelOfSteamGames.Entity
                 CurrentSpeed = 0;
                 IsSpinning = false;
 
-                OnStopSpinning(Games[CurrentRegion]);
+                OnStopSpinning(CurrentGame);
             }
 
 
@@ -243,7 +248,7 @@ namespace WheelOfSteamGames.Entity
             }
 
             CurrentAngle += CurrentSpeed;
-            CurrentGameText.SetText(Games[CurrentRegion].Name);
+            CurrentGameText.SetText(CurrentGame.AppID != -1 ? CurrentGame.Name : "No game");
         }
 
         public double NormalizeAngle(double angle)
@@ -254,6 +259,8 @@ namespace WheelOfSteamGames.Entity
 
         public int GetRegionFromAngle(float angle)
         {
+            if (Games.Count <= 0) return -1;
+
             angle = (float)NormalizeAngle(angle + Math.PI*2 - (ElementSizeRadians /2f));
             float percent = angle / (float)(Math.PI * 2);
             int region = (int)Math.Ceiling((percent * Games.Count));

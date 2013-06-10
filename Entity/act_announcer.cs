@@ -159,7 +159,7 @@ namespace WheelOfSteamGames.Entity
 
         
 
-        private void SayLine(string str)
+        public void SayLine(string str)
         {
             this.curString = str;
 
