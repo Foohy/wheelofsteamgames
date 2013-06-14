@@ -347,18 +347,30 @@ namespace WheelOfSteamGames
         {
             if (Loaded && !IsLoadingData)
             {
-                if (e.Key == OpenTK.Input.Key.Space && !Spinner.IsSpinning)
+                if (!Spinner.IsSpinning)
                 {
-                    if (Spinner.Games.Count > 0)
+                    //If we press space, let's spin da wheel
+                    if (e.Key == OpenTK.Input.Key.Space)
                     {
-                        Spinner.Spin(0.095f);
-                        Actor.SetTransitionAnimation("announcer_player_to_wheel", "announcer_idle_wheel");
+                        if (Spinner.Games.Count > 0)
+                        {
+                            Spinner.Spin(0.095f);
+                            Actor.SetTransitionAnimation("announcer_player_to_wheel", "announcer_idle_wheel");
+                            Actor.FadeLine();
+                        }
+                        else
+                        {
+                            Actor.SayLine("Woah there tiger, you don't have any games on the board!");
+                        }
+                        HintManager.RemoveHintNice("spin_controls_hint");
                     }
-                    else
-                    {
-                        Actor.SayLine("Woah there tiger, you don't have any games on the board!");
-                    }
-                    HintManager.RemoveHintNice("spin_controls_hint");
+
+                    //Make the a-meow-nncer say the next/previous line of a stack of lines about a nerd game.
+                    if (e.Key == OpenTK.Input.Key.Left || e.Key == OpenTK.Input.Key.A)
+                        Actor.SayPreviousPage();
+                    else if (e.Key == OpenTK.Input.Key.Right || e.Key == OpenTK.Input.Key.D)
+                        Actor.SayNextPage();
+
                 }
 
                 if (e.Key == OpenTK.Input.Key.F1)
@@ -464,6 +476,7 @@ namespace WheelOfSteamGames
             Menu.AddCheckBox("Show Games with HDR", "game_hdr");
             Menu.AddCheckBox("Show Recently played games", "game_2weeks");
             Menu.AddCheckBox("Show Games never played", "game_never");
+            Menu.AddCheckBox("Show Games with custom text", "game_meow_text");
             Menu.HideToLeft();
 
             Menu.OnAcceptPress += new Action(Menu_OnAcceptPress);
@@ -518,6 +531,9 @@ namespace WheelOfSteamGames
                     return false;
 
                 if (Menu.GetCheckboxChecked("game_never") && game.HoursOnRecord > 0)
+                    return false;
+
+                if( Menu.GetCheckboxChecked("game_meow_text") && !Actor.HasDialogue( game.AppID ) )
                     return false;
 
                 return true;

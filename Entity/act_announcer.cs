@@ -19,10 +19,12 @@ namespace WheelOfSteamGames.Entity
     class act_announcer : base_actor
     {
         public const string DialoguesDir = "Resources/Text/dialogues/";
-        public const double TextRemainTime = 6.0f;
-        public const double TextFadeTime = 1.0f;
+        public const double TextRemainTime = 8.0f;
+        public const double TextFadeTime = 2.0f;
 
         private List<App> AppLines = new List<App>();
+        private Line CurLine;
+        private int CurLineIndex= 0;
         private FBO SpeechFBO; //This is where we'll render out the speech bubble for one frame and display it just as a texture
         private string curString;
         private string lastString;
@@ -96,7 +98,6 @@ namespace WheelOfSteamGames.Entity
 
         void GUIManager_PostDrawHUD(EventArgs e)
         {
-
             if (this.curString != this.lastString)
             {
                 this.lastString = this.curString;
@@ -107,20 +108,23 @@ namespace WheelOfSteamGames.Entity
                 Utilities.ViewMatrix = Line2D3DMatrix;
                 Utilities.ProjectionMatrix = Matrix4.Identity;
 
-
                 //Start rendering from our ~custom~ framebuffer
                 SpeechFBO.BindForWriting();
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-
                 DrawTextBubble();
                 SpeechFBO.ResetFramebuffer();
-                // DrawTextBubble();
 
                 //Set the viewmatrix back to what it was
                 Utilities.ViewMatrix = oldView;
                 Utilities.ProjectionMatrix = oldProj;
             }
+        }
+
+        public bool HasDialogue(int AppID)
+        {
+            App app = FindAppByID(AppID);
+            return app != null && app.AppID == AppID;
         }
 
         public void LoadDialogue( string dialogueSet )
@@ -142,8 +146,42 @@ namespace WheelOfSteamGames.Entity
             App app = FindAppByID(AppID);
             if (app == null) return;
 
-            string Line = app.Lines[Utilities.Rand.Next(0, app.Lines.Length)].GameLines[0]; //TODO: Add support for multiple pages of text
-            SayLine(Line);
+            Line Line = app.Lines[Utilities.Rand.Next(0, app.Lines.Length)];
+            SayLine(Line.GameLines[0]);
+            this.CurLine = Line;
+            this.CurLineIndex = 0;
+        }
+
+        public void SayNextPage()
+        {
+            SetTextPage(this.CurLineIndex + 1);
+        }
+
+        public void SayPreviousPage()
+        {
+            SetTextPage(this.CurLineIndex - 1);
+        }
+
+        public bool HasNextPage()
+        {
+            return this.CurLine != null && this.CurLineIndex < this.CurLine.GameLines.Length-1;
+        }
+
+        public bool HasPreviousPage()
+        {
+            return this.CurLine != null && this.CurLineIndex > 0;
+        }
+
+        public void SetTextPage(int pageIndex)
+        {
+            if (this.CurLine == null) return;
+
+            int newIndex = Utilities.Clamp(pageIndex, this.CurLine.GameLines.Length - 1, 0);
+            if (newIndex != this.CurLineIndex)
+                this.CurLineIndex = newIndex;
+            else return;
+
+            this.SayLine(this.CurLine.GameLines[this.CurLineIndex]);
         }
 
         private App FindAppByID(int id, bool def=false)
@@ -157,13 +195,17 @@ namespace WheelOfSteamGames.Entity
             else return null;
         }
 
-        
-
         public void SayLine(string str)
         {
             this.curString = str;
 
             TextEndTime = Utilities.Time + TextRemainTime;
+            TextEndFadeTime = TextEndTime + TextFadeTime;
+        }
+
+        public void FadeLine()
+        {
+            TextEndTime = Utilities.Time;
             TextEndFadeTime = TextEndTime + TextFadeTime;
         }
 
@@ -183,6 +225,22 @@ namespace WheelOfSteamGames.Entity
             Surface.SetNoTexture();
             Surface.SetDrawColor(0, 0, 0);
             Surface.DrawWrappedText("windowtitle", this.curString, 25, 45, LineBubbleRes - 80);
+
+            //Draw directional arrow, if neccessary
+            if (this.HasNextPage())
+            {
+                Surface.SetTexture(Resource.GetTexture("arrow_right.png"));
+                Surface.SetDrawColor(255, 255, 255);
+                Surface.DrawRect(LineBubbleRes - (25 + 25), LineBubbleRes - (130), 25, 25);
+            }
+
+            //Draw directional arrow, if neccessary
+            if (this.HasPreviousPage())
+            {
+                Surface.SetTexture(Resource.GetTexture("arrow_left.png"));
+                Surface.SetDrawColor(255, 255, 255);
+                Surface.DrawRect(25, LineBubbleRes - (130), 25, 25);
+            }
         }
 
         
