@@ -205,8 +205,11 @@ namespace WheelOfSteamGames.Entity
 
         public void FadeLine()
         {
-            TextEndTime = Utilities.Time;
-            TextEndFadeTime = TextEndTime + TextFadeTime;
+            if (TextEndTime > Utilities.Time)
+            {
+                TextEndTime = Utilities.Time;
+                TextEndFadeTime = TextEndTime + TextFadeTime;
+            }
         }
 
         /// <summary>
