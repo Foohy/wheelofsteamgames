@@ -30,8 +30,12 @@ namespace WheelOfSteamGames.Entity
         private string lastString;
         private Matrix4 Line2D3DMatrix;
         private const int LineBubbleRes = 256;
+        private const int MeshScale = 8;
+        private Vector2 LeftArrowPos = new Vector2(25, LineBubbleRes - 130);
+        private Vector2 RightArrowPos = new Vector2(LineBubbleRes - 50, LineBubbleRes - 130);
         private Mesh TextDisplayMesh;
         private Material TextMat;
+        private Vector3 TextDisplayOffset = new Vector3(-5, 16, 0);
 
         private double TextEndTime = 0;
         private double TextEndFadeTime = 0;
@@ -88,12 +92,28 @@ namespace WheelOfSteamGames.Entity
                 TextDisplayMesh.Alpha = TextEndTime < Utilities.Time ? 1 - (float)((Utilities.Time - TextEndTime) / (TextEndFadeTime - TextEndTime)) : 1.0f;
 
 
-                TextDisplayMesh.Position = this.Position + new Vector3(-5, 16, 0);
+                TextDisplayMesh.Position = this.Position + TextDisplayOffset;
                 TextDisplayMesh.Angles = new Angle(this.Angles.Pitch + 180, this.Angles.Yaw, this.Angles.Roll);
-                TextDisplayMesh.Scale = Vector3.One * 8;
+                TextDisplayMesh.Scale = Vector3.One * MeshScale;
                 TextDisplayMesh.mat = TextMat;
                 TextDisplayMesh.Draw();
             }
+
+
+            //Handle pressing the directional buttons with the mouse
+            /*
+            Vector3 Up;
+            Vector3 Forward = this.Angles.Forward();
+            Vector3 Right;
+            this.Angles.AngleVectors(out Forward, out Up, out Right);
+
+            //Get the world position of the buttons
+            Vector3 worldPosLeft = new Vector3(Forward.X * (LeftArrowPos.X / LineBubbleRes) * MeshScale, -Up.Y * (LeftArrowPos.Y / LineBubbleRes) * MeshScale, -Forward.Z * (LeftArrowPos.X / LineBubbleRes) * MeshScale) + this.Position + TextDisplayOffset;
+            Vector3 worldPosRight = new Vector3(Forward.X * (RightArrowPos.X / LineBubbleRes) * MeshScale, -Up.Y * (RightArrowPos.Y / LineBubbleRes) * MeshScale, -Forward.Z * (RightArrowPos.X / LineBubbleRes) * MeshScale) + this.Position + TextDisplayOffset;
+
+            Graphics.DrawSphere(worldPosLeft, 0.5f);
+            Graphics.DrawSphere(worldPosRight, 0.5f);
+             * */
         }
 
         void GUIManager_PostDrawHUD(EventArgs e)
@@ -229,20 +249,20 @@ namespace WheelOfSteamGames.Entity
             Surface.SetDrawColor(0, 0, 0);
             Surface.DrawWrappedText("windowtitle", this.curString, 25, 45, LineBubbleRes - 80);
 
-            //Draw directional arrow, if neccessary
+            //Draw right directional arrow, if neccessary
             if (this.HasNextPage())
             {
                 Surface.SetTexture(Resource.GetTexture("arrow_right.png"));
                 Surface.SetDrawColor(255, 255, 255);
-                Surface.DrawRect(LineBubbleRes - (25 + 25), LineBubbleRes - (130), 25, 25);
+                Surface.DrawRect(RightArrowPos, 25, 25);
             }
 
-            //Draw directional arrow, if neccessary
+            //Draw left directional arrow, if neccessary
             if (this.HasPreviousPage())
             {
                 Surface.SetTexture(Resource.GetTexture("arrow_left.png"));
                 Surface.SetDrawColor(255, 255, 255);
-                Surface.DrawRect(25, LineBubbleRes - (130), 25, 25);
+                Surface.DrawRect(LeftArrowPos, 25, 25);
             }
         }
 
