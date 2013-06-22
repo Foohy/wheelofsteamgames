@@ -88,6 +88,7 @@ uniform float _time;
 uniform int gNumPointLights;
 uniform int gNumSpotLights;
 uniform int gNumShadowCasters;
+uniform int gCheap = 0;
 uniform float gMatSpecularIntensity;
 uniform float gSpecularPower;
 uniform float gAlpha = 1.0;
@@ -220,8 +221,8 @@ vec4 CalcShadowSpotLight(ShadowCaster l, vec3 Normal, vec4 LightSpacePos)
     if (UVCoords.x < 1 && UVCoords.y < 1 && UVCoords.x > 0 && UVCoords.y > 0) 
 	{
 		vec4 Color = vec4( 1, 0, 0, 0 );
-		/*
-		if (l.Cheap > 0)
+
+		if (l.Cheap + gCheap > 0 )
 		{
 			Color = CalcPointLight(l.Base, Normal, LightSpacePos);
 		}
@@ -229,8 +230,6 @@ vec4 CalcShadowSpotLight(ShadowCaster l, vec3 Normal, vec4 LightSpacePos)
 		{
 			Color = CalcShadowPointLight(l.Base, Normal, LightSpacePos);
 		}
-		*/
-		Color = CalcShadowPointLight(l.Base, Normal, LightSpacePos);
 
 		Color *= texture2D(sampler_shadow_tex, -UVCoords );
 
