@@ -133,7 +133,7 @@ namespace WheelOfSteamGames.Entity
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
                 DrawTextBubble();
-                SpeechFBO.ResetFramebuffer();
+                FBO.ResetFramebuffer();
 
                 //Set the viewmatrix back to what it was
                 Utilities.ViewMatrix = oldView;
