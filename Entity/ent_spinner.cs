@@ -312,6 +312,7 @@ namespace WheelOfSteamGames.Entity
             }
 
             CurrentAngle += CurrentSpeed;
+            CurrentAngle = (float)NormalizeAngle(CurrentAngle);
             CurrentGameText.SetText(CurrentGame.AppID != -1 ? CurrentGame.Name : "No game");
         }
 
