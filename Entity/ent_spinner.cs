@@ -28,13 +28,20 @@ namespace WheelOfSteamGames.Entity
         public float SpinupForce { get; set; }
         public float SpeedupTime = 1.2f; //Time to apply the force to spin up
         public bool IsSpinning { get; private set; }
+        public bool Enabled { get; set; }
 
         public event Action<SteamCommunity.Game> OnSpinnerStop;
+        public event Action<bool> OnSpin;
+        public event Action OnWheelGrab;
 
         private double SpeedTime = 0;
         private Vector3 PaddlePositionOffset = new Vector3(0, 5.2f, 0);
         private float LastSoundRegion = 0;
         private float ElementSizeRadians = 0; //Size of each element, in radians
+        private float MouseAngleOffset = 0;
+        private float GrabApproachSpeed = 0;
+        private float GrabSmoothedAngle = 0;
+        private bool IsMouseDown = false;
         Mesh Wheel;
         Mesh Paddle;
         Text CurrentGameText;
@@ -56,13 +63,46 @@ namespace WheelOfSteamGames.Entity
             Paddle.mat = Resource.GetMaterial("models/spinner_paddle");
 
             this.IsSpinning = false;
+            this.Enabled = true;
 
             Audio.Precache("Resources/Audio/spinner_click.wav");
             CurrentGameText = new Text("game_large", "NONE");
             GUIManager.PostDrawHUD += new GUIManager.OnDrawHUD(GUIManager_PostDrawHUD);
 
+            Utilities.window.Mouse.ButtonDown += new EventHandler<OpenTK.Input.MouseButtonEventArgs>(Mouse_ButtonDown);
+            Utilities.window.Mouse.ButtonUp += new EventHandler<OpenTK.Input.MouseButtonEventArgs>(Mouse_ButtonUp);
+
             Diameter *= TextureScale;
             Center *= TextureScale;
+        }
+
+        void Mouse_ButtonUp(object sender, OpenTK.Input.MouseButtonEventArgs e)
+        {
+            if (IsMouseDown)
+            {
+                this.CurrentSpeed = GrabApproachSpeed * Utilities.F_DEG2RAD;
+                this.IsSpinning = true;
+
+                if (OnSpin != null)
+                    OnSpin(true);
+            }
+
+            IsMouseDown = false;
+        }
+
+        void Mouse_ButtonDown(object sender, OpenTK.Input.MouseButtonEventArgs e)
+        {
+            if (!this.Enabled) return;
+
+            Vector2 ScreenPos = Utilities.Get3Dto2D(Wheel.Position);
+            if (Math.Sqrt(Math.Pow(e.X - ScreenPos.X, 2) + Math.Pow(e.Y - ScreenPos.Y, 2)) < 150 && !this.IsSpinning)
+            {
+                IsMouseDown = true;
+                this.MouseAngleOffset = (float)Math.Atan2(Utilities.window.Mouse.X - ScreenPos.X, Utilities.window.Mouse.Y - ScreenPos.Y) - this.CurrentAngle;// *Utilities.F_DEG2RAD;
+                GrabSmoothedAngle = this.CurrentAngle;
+                if (OnWheelGrab != null)
+                    OnWheelGrab();
+            }
         }
 
         void GUIManager_PostDrawHUD(EventArgs e)
@@ -77,9 +117,6 @@ namespace WheelOfSteamGames.Entity
 
             CurrentGameText.SetPos((Utilities.window.Width / 2) - (Length*Scale / 2), 20);
             CurrentGameText.Draw();
-
-            Vector2 ScreenPos = Utilities.Get3Dto2D( Wheel.Position );
-            Surface.DrawSimpleText("debug", ScreenPos.ToString(), ScreenPos.X, ScreenPos.Y);
         }
 
         public void CreateElements( List<SteamCommunity.Game> games )
@@ -195,13 +232,18 @@ namespace WheelOfSteamGames.Entity
 
         public void Spin(float force)
         {
-            if (this.IsSpinning || this.Games == null || this.Games.Count <= 0) return;
+            if (!this.Enabled || this.IsSpinning || this.Games == null || this.Games.Count <= 0 || this.IsMouseDown) return;
 
             SpeedTime = Utilities.Time;
             SpinupForce = force;
 
             this.IsSpinning = true;
             this.SpeedupTime = (float)Utilities.Rand.NextDouble(0.7, 1.3);
+
+            if (OnSpin != null)
+            {
+                OnSpin(false);
+            }
         }
 
         public float GetPaddleTurn( float angle )
@@ -218,7 +260,23 @@ namespace WheelOfSteamGames.Entity
         public override void Think()
         {
             Wheel.Position = this.Position;
-            Wheel.Angles = this.Angles + new Angle(this.CurrentAngle * Utilities.F_RAD2DEG, 0, 0);
+            
+
+            if (IsMouseDown && !this.IsSpinning)
+            {
+                float LastAngle = GrabSmoothedAngle;
+                Vector2 ScreenPos = Utilities.Get3Dto2D( Wheel.Position );
+                float ang = (float)Math.Atan2(Utilities.window.Mouse.X - ScreenPos.X, Utilities.window.Mouse.Y - ScreenPos.Y) - MouseAngleOffset;
+
+                GrabSmoothedAngle = Utilities.Lerp(GrabSmoothedAngle, ang, (float)Utilities.ThinkTime * 13);
+                GrabApproachSpeed = (GrabSmoothedAngle - LastAngle) / (float)Utilities.ThinkTime;
+                Wheel.Angles = new Angle(GrabSmoothedAngle * Utilities.F_RAD2DEG, this.Angles.Yaw, this.Angles.Roll);
+                this.CurrentAngle = GrabSmoothedAngle;
+            }
+            else
+            {
+                Wheel.Angles = this.Angles + new Angle(this.CurrentAngle * Utilities.F_RAD2DEG, 0, 0);
+            }
 
             if (Games == null) return;
 
@@ -226,21 +284,24 @@ namespace WheelOfSteamGames.Entity
             Paddle.Angles = new Angle(this.Angles.Pitch + GetPaddleTurn(this.CurrentAngle), this.Angles.Yaw, this.Angles.Roll);
             int CurrentRegion = GetRegionFromAngle(CurrentAngle);
             SteamCommunity.Game CurrentGame = GetCurrentGame(CurrentRegion);
-            //Spin if neccessary
-            if (Utilities.Time < SpeedTime + SpeedupTime)
+            //Spin!
+            if (this.IsSpinning)
             {
-                CurrentSpeed += (float)Utilities.ThinkTime * this.SpinupForce;
-            }
-            else if (CurrentSpeed > 0)
-            {
-                CurrentSpeed -= (float)Utilities.ThinkTime * this.SpinFriction;
-            }
-            else if (this.IsSpinning)
-            {
-                CurrentSpeed = 0;
-                IsSpinning = false;
+                if (Utilities.Time < SpeedTime + SpeedupTime)
+                {
+                    CurrentSpeed += (float)Utilities.ThinkTime * this.SpinupForce;
+                }
+                else if (Math.Abs(CurrentSpeed) > 0.001)
+                {
+                    CurrentSpeed -= (float)Utilities.ThinkTime * this.SpinFriction * Math.Sign(this.CurrentSpeed);
+                }
+                else
+                {
+                    CurrentSpeed = 0;
+                    IsSpinning = false;
 
-                OnStopSpinning(CurrentGame);
+                    OnStopSpinning(CurrentGame);
+                }
             }
 
 

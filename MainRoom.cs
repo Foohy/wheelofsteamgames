@@ -355,8 +355,6 @@ namespace WheelOfSteamGames
                         if (Spinner.Games.Count > 0)
                         {
                             Spinner.Spin(0.095f);
-                            Actor.SetTransitionAnimation("announcer_player_to_wheel", "announcer_idle_wheel");
-                            Actor.FadeLine();
                         }
                         else
                         {
@@ -443,6 +441,9 @@ namespace WheelOfSteamGames
             Spinner.SetAngle(new Angle( 0, -90, 0 ));
             Spinner.SetPos(new Vector3(-2.8f, -(float)Spinner.Model.BBox.Negative.Y, 18));
             Spinner.OnSpinnerStop += new Action<SteamCommunity.Game>(Spinner_OnSpinnerStop);
+            Spinner.OnSpin += new Action<bool>(Spinner_OnSpin);
+            Spinner.OnWheelGrab += new Action(Spinner_OnWheelGrab);
+            Spinner.Enabled = false;
 
             View.Player.SetPos(new Vector3(0.807714f, 10.01533f, 50.94458f));
             View.Player.SetAngle(new Angle(-3.26675f, -90.13329f, 0));
@@ -492,6 +493,20 @@ namespace WheelOfSteamGames
             Actor.SayLine(game.AppID);
             Console.WriteLine(string.Format("Landed on \"{0}\" ({1})", game.Name, game.AppID));
         }
+
+        static void Spinner_OnWheelGrab()
+        {
+            Actor.SetTransitionAnimation("announcer_player_to_wheel", "announcer_idle_wheel");
+        }
+
+        static void Spinner_OnSpin( bool WasMouseSpin )
+        {
+            if (!WasMouseSpin)
+                Actor.SetTransitionAnimation("announcer_player_to_wheel", "announcer_idle_wheel");
+
+            Actor.FadeLine();
+        }
+
 
         static List<SteamCommunity.Game> GetFilteredGames(ReturnCriteria rc)
         {
@@ -569,6 +584,7 @@ namespace WheelOfSteamGames
                 HintManager.AddHint("Press space to spin!", 2.0f, 5.0f, "spin_controls_hint");
                 Started = true;
                 spotlight.Enabled = true;
+                Spinner.Enabled = true;
                 Audio.PlaySound("Resources/Audio/light_on.wav");
                 Actor.ShouldDraw = true;
                 LightingTechnique.EnableEnvironmentLight(true);
