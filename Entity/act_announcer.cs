@@ -43,15 +43,15 @@ namespace WheelOfSteamGames.Entity
         //Stuff for dialogue
         class Line
         {
-            public string[] GameLines;
-            public string ReactionAnim;
-            public string AdditionalInfo; //Comments, etc.
+            public string[] GameLines = null;
+            public string ReactionAnim = "";
+            public string AdditionalInfo = ""; //Comments, etc.
         }
 
         class App
         {
-            public int AppID;
-            public Line[] Lines;
+            public int AppID = 0;
+            public Line[] Lines = null;
         }
 
         public override void Init()
