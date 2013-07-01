@@ -77,6 +77,9 @@ namespace WheelOfSteamGames.Entity
 
             CurrentGameText.SetPos((Utilities.window.Width / 2) - (Length*Scale / 2), 20);
             CurrentGameText.Draw();
+
+            Vector2 ScreenPos = Utilities.Get3Dto2D( Wheel.Position );
+            Surface.DrawSimpleText("debug", ScreenPos.ToString(), ScreenPos.X, ScreenPos.Y);
         }
 
         public void CreateElements( List<SteamCommunity.Game> games )
