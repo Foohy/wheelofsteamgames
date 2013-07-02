@@ -268,7 +268,7 @@ namespace WheelOfSteamGames.Entity
                 Vector2 ScreenPos = Utilities.Get3Dto2D( Wheel.Position );
                 float ang = (float)Math.Atan2(Utilities.window.Mouse.X - ScreenPos.X, Utilities.window.Mouse.Y - ScreenPos.Y) - MouseAngleOffset;
 
-                GrabSmoothedAngle = Utilities.Lerp(GrabSmoothedAngle, ang, (float)Utilities.ThinkTime * 13);
+                GrabSmoothedAngle = Utilities.LerpAngle(GrabSmoothedAngle, ang, (float)Utilities.ThinkTime * 13);
                 GrabApproachSpeed = (GrabSmoothedAngle - LastAngle) / (float)Utilities.ThinkTime;
                 Wheel.Angles = new Angle(GrabSmoothedAngle * Utilities.F_RAD2DEG, this.Angles.Yaw, this.Angles.Roll);
                 this.CurrentAngle = GrabSmoothedAngle;
@@ -312,21 +312,15 @@ namespace WheelOfSteamGames.Entity
             }
 
             CurrentAngle += CurrentSpeed;
-            CurrentAngle = (float)NormalizeAngle(CurrentAngle);
+            CurrentAngle = (float)Utilities.NormalizeAngle(CurrentAngle);
             CurrentGameText.SetText(CurrentGame.AppID != -1 ? CurrentGame.Name : "No game");
-        }
-
-        public double NormalizeAngle(double angle)
-        {
-            angle = angle % (Math.PI * 2);
-            return angle >= 0 ? angle : angle + Math.PI * 2;
         }
 
         public int GetRegionFromAngle(float angle)
         {
             if (Games.Count <= 0) return -1;
 
-            angle = (float)NormalizeAngle(angle + Math.PI*2 - (ElementSizeRadians /2f));
+            angle = (float)Utilities.NormalizeAngle(angle + Math.PI*2 - (ElementSizeRadians /2f));
             float percent = angle / (float)(Math.PI * 2);
             int region = (int)Math.Ceiling((percent * Games.Count));
 
