@@ -41,6 +41,7 @@ namespace WheelOfSteamGames.Entity
         private float MouseAngleOffset = 0;
         private float GrabApproachSpeed = 0;
         private float GrabSmoothedAngle = 0;
+        private float WheelModelRadius = 5; //Estimation until we actually load the model
         private bool IsMouseDown = false;
         Mesh Wheel;
         Mesh Paddle;
@@ -62,6 +63,9 @@ namespace WheelOfSteamGames.Entity
             Paddle = Resource.GetMesh("spinner_paddle.obj");
             Paddle.mat = Resource.GetMaterial("models/spinner_paddle");
 
+            //Store the radius of the wheel model
+            WheelModelRadius = (Wheel.BBox.Positive.Z - Wheel.BBox.Negative.Z) / 2;
+
             this.IsSpinning = false;
             this.Enabled = true;
 
@@ -71,9 +75,15 @@ namespace WheelOfSteamGames.Entity
 
             Utilities.window.Mouse.ButtonDown += new EventHandler<OpenTK.Input.MouseButtonEventArgs>(Mouse_ButtonDown);
             Utilities.window.Mouse.ButtonUp += new EventHandler<OpenTK.Input.MouseButtonEventArgs>(Mouse_ButtonUp);
+            Utilities.window.Mouse.Move += new EventHandler<OpenTK.Input.MouseMoveEventArgs>(Mouse_Move);
 
             Diameter *= TextureScale;
             Center *= TextureScale;
+        }
+
+        void Mouse_Move(object sender, OpenTK.Input.MouseMoveEventArgs e)
+        {
+            UpdateCursor();
         }
 
         void Mouse_ButtonUp(object sender, OpenTK.Input.MouseButtonEventArgs e)
@@ -82,6 +92,7 @@ namespace WheelOfSteamGames.Entity
             {
                 this.CurrentSpeed = GrabApproachSpeed * Utilities.F_DEG2RAD;
                 this.IsSpinning = true;
+                UpdateCursor();
 
                 if (OnSpin != null)
                     OnSpin(true);
@@ -94,10 +105,12 @@ namespace WheelOfSteamGames.Entity
         {
             if (!this.Enabled) return;
 
-            Vector2 ScreenPos = Utilities.Get3Dto2D(Wheel.Position);
-            if (Math.Sqrt(Math.Pow(e.X - ScreenPos.X, 2) + Math.Pow(e.Y - ScreenPos.Y, 2)) < 150 && !this.IsSpinning)
+            if (IsOverSpinner( e.X, e.Y) && !this.IsSpinning)
             {
                 IsMouseDown = true;
+                UpdateCursor();
+
+                Vector2 ScreenPos = Utilities.Get3Dto2D(Wheel.Position);
                 this.MouseAngleOffset = (float)Math.Atan2(Utilities.window.Mouse.X - ScreenPos.X, Utilities.window.Mouse.Y - ScreenPos.Y) - this.CurrentAngle;// *Utilities.F_DEG2RAD;
                 GrabSmoothedAngle = this.CurrentAngle;
                 if (OnWheelGrab != null)
@@ -239,6 +252,7 @@ namespace WheelOfSteamGames.Entity
 
             this.IsSpinning = true;
             this.SpeedupTime = (float)Utilities.Rand.NextDouble(0.7, 1.3);
+            UpdateCursor();
 
             if (OnSpin != null)
             {
@@ -327,8 +341,26 @@ namespace WheelOfSteamGames.Entity
             return region >= Games.Count ? 0 : region; //Handle wrapping around
         }
 
+        private bool IsOverSpinner(int x, int y)
+        {
+            Vector2 ScreenPos = Utilities.Get3Dto2D(Wheel.Position);
+            Vector2 WheelSidePos = Utilities.Get3Dto2D(Wheel.Position + Wheel.Angles.Right() * WheelModelRadius);
+
+            return (Math.Pow(x- ScreenPos.X, 2) + Math.Pow(y - ScreenPos.Y, 2) < (Math.Pow(WheelSidePos.X - ScreenPos.X, 2) + Math.Pow(WheelSidePos.Y - ScreenPos.Y, 2)));
+        }
+
+        private void UpdateCursor()
+        {
+            if (this.Enabled && IsOverSpinner(Utilities.window.Mouse.X, Utilities.window.Mouse.Y))
+            {
+                System.Windows.Forms.Cursor.Current = this.IsSpinning ? System.Windows.Forms.Cursors.No : System.Windows.Forms.Cursors.Hand;
+            }
+        }
+
         private void OnStopSpinning( SteamCommunity.Game game )
         {
+            UpdateCursor();
+
             //Invoke the event that we've stopped spinning and have got our game
             if (OnSpinnerStop != null)
                 OnSpinnerStop.Invoke(game);
