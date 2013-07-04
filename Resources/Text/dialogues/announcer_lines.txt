@@ -55,7 +55,7 @@
           "Did you know that a group of modders, whom Robin Walker was a part of...",
           "originally made tfc for Quake? It's true!"
         ],
-        "ReactionAnim": "suprised",
+        "ReactionAnim": "Surprised",
         "AdditionalInfo": ""
       },
       {
@@ -121,7 +121,7 @@
       {
         "GameLines": [
           "Half-Life: Opposing Force! Gearbox Studios made it, you know.",
-          "Kind of a far call from what they do now, huh?"
+          "Kind of a far cry from what they do now, huh?"
         ],
         "ReactionAnim": "Neutral",
         "AdditionalInfo": ""
@@ -154,7 +154,7 @@
     "Lines": [
       {
         "GameLines": [
-          "Oh. The OTHER xcom game. Well have fun I suppose."
+          "Oh. The OTHER Xcom game. Well have fun I suppose."
         ],
         "ReactionAnim": "Disappointed",
         "AdditionalInfo": ""
@@ -263,7 +263,7 @@
     "Lines": [
       {
         "GameLines": [
-          "No More Room In Hell! I'm still suprised this game actually was released at all.",
+          "No More Room In Hell! I'm still surprised this game actually was released at all.",
           "It was in development as a mod for the better part of 4 years! Talk about dedication."
         ],
         "ReactionAnim": "Neutral",
@@ -409,6 +409,419 @@
         "GameLines": [
           "Payday 2!... or is it PAYDAY 2?",
           "What's the legal spelling of that? I don't want lawyers at my door."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 2400,
+    "Lines": [
+      {
+        "GameLines": [
+          "I heard that Foohy really loves this game.",
+          "No, seriously. Ask him about how much he loves it."
+        ],
+        "ReactionAnim": "happy",
+        "AdditionalInfo": "HI FOOHY"
+      },
+      {
+        "GameLines": [
+          "Wait, isn't this just a more interesting version of TTT?"
+        ],
+        "ReactionAnim": "confused",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 440,
+    "Lines": [
+      {
+        "GameLines": [
+          "Somebody told me this game was all about hats.",
+          "I don't believe them."
+        ],
+        "ReactionAnim": "Happy",
+        "AdditionalInfo": "Add hats"
+      },
+      {
+        "GameLines": [
+          "Holy shit! Check out my hat!",
+          "I'll sell it to you for $400.",
+          "It's cheap as free."
+        ],
+        "ReactionAnim": "Happy",
+        "AdditionalInfo": "Add hats"
+      }
+    ]
+  },
+  {
+    "AppID": 94000,
+    "Lines": [
+      {
+        "GameLines": [
+          "Jesus, this game is depressing.",
+          "You just sit around and worry about a dinner date.",
+          "Please don't play this."
+        ],
+        "ReactionAnim": "Depressed",
+        "AdditionalInfo": "Add tears"
+      },
+      {
+        "GameLines": [
+          "I'm begging you...",
+          "Spin again."
+        ],
+        "ReactionAnim": "Depressed",
+        "AdditionalInfo": "Add tears"
+      }
+    ]
+  },
+  {
+    "AppID": 24780,
+    "Lines": [
+      {
+        "GameLines": [
+          "I'm the mayor.",
+          "Worship me."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "Welcome to DONGVILE."
+        ],
+        "ReactionAnim": "Happy",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 620,
+    "Lines": [
+      {
+        "GameLines": [
+          "What the hell, man.",
+          "I got stuck because my character won't talk."
+        ],
+        "ReactionAnim": "Angry",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "I heard the community unlocked Portal 2 early.",
+          "I mean, only a few hours early, but it's the thought that counts, right?"
+        ],
+        "ReactionAnim": "Happy",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 212680,
+    "Lines": [
+      {
+        "GameLines": [
+          "In this game, you can go faster than light.",
+          "I'm sorry. That was terrible."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "I heard this game was pretty damn hard.",
+          "You guys should stop complaining so much.",
+          "It's just a roguelike."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 12110,
+    "Lines": [
+      {
+        "GameLines": [
+          "Oh man, I loved the 80s!",
+          "Fast cars, faster women...",
+          "Hard drugs, crime sprees, hostile takeovers...",
+          "...You know what, forget that last part."
+        ],
+        "ReactionAnim": "Happy",
+        "AdditionalInfo": "Balls"
+      },
+      {
+        "GameLines": [
+          "God, this game is fun.",
+          "Where else can you have sex with a hooker...",
+          "...and then kill her for your money back?",
+          "Every other GTA game? Oh."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 33440,
+    "Lines": [
+      {
+        "GameLines": [
+          "Oh... Driver. I still remember Driv3r.",
+          "Well, at least this game's way better."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "Hey, San Francisco! Looks nice.",
+          "Well, except for the coma part.",
+          "That's really no fun."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 320,
+    "Lines": [
+      {
+        "GameLines": [
+          "This game has what is probably the greatest weapon of all time:",
+          "A toilet.",
+          "It also has the best kill icon of all time."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "It turns out that one of the major selling points for this game...",
+          "...is that you can throw a toilet at your friends.",
+          "Brilliant."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 31280,
+    "Lines": [
+      {
+        "GameLines": [
+          "Damn, I was bluffing."
+        ],
+        "ReactionAnim": "Angry",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "I heard that that Tycho guy is a great beatboxer.",
+          "Or maybe it's just the guy that voices him?"
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 227300,
+    "Lines": [
+      {
+        "GameLines": [
+          "I'm told by a British guy that this game isn't accurate enough.",
+          "You just can't please some people."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "Drive trucks!",
+          "Across Europe!",
+          "Wow!"
+        ],
+        "ReactionAnim": "Happy",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 570,
+    "Lines": [
+      {
+        "GameLines": [
+          "Well. This is a very popular game.",
+          "I should really have something interesting to say about it.",
+          "Oh well."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "The guy who worked on the original Dota is doing this.",
+          "Conversely, Blizzard tried to take the name for their version.",
+          "They lost."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 58510,
+    "Lines": [
+      {
+        "GameLines": [
+          "Almost, but not quite, entirely unlike SimCity."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 201760,
+    "Lines": [
+      {
+        "GameLines": [
+          "It's just Cities XL 2011 plus one, right?"
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 22600,
+    "Lines": [
+      {
+        "GameLines": [
+          "The worms are back, and they've reloaded.",
+          "Dunno what that's supposed to mean, really.",
+          "Of course they reloaded. They use guns a lot."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "Pro tip: Try rocket jumping!"
+        ],
+        "ReactionAnim": "Happy",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 49600,
+    "Lines": [
+      {
+        "GameLines": [
+          "I can never figure out what's happening in this game.",
+          "Wait, I'm dead? What killed me?"
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "Ah, Beat Hazard.",
+          "Well, I'll give them credit. The title is accurate.",
+          "Every single beat is a fucking hazard."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 104700,
+    "Lines": [
+      {
+        "GameLines": [
+          "Didn't they make this game because nobody played the original?"
+        ],
+        "ReactionAnim": "Confused",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "Well, this must be superior to Monday Night Combat in every way."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 550,
+    "Lines": [
+      {
+        "GameLines": [
+          "Fun fact: Lots of people joined a boycott group for this game.",
+          "They were upset that it was a new game, not DLC.",
+          "I was just happy that Valve actually released a game."
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "Hey, this is just like Counter-Strike!"
+        ],
+        "ReactionAnim": "Happy",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 730,
+    "Lines": [
+      {
+        "GameLines": [
+          "Isn't this CS:S, but re-released?"
+        ],
+        "ReactionAnim": "Confused",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "I mean, I understand remaking CS:S.",
+          "It was really showing its age.",
+          "But is Global Offensive even different at all?"
+        ],
+        "ReactionAnim": "Neutral",
+        "AdditionalInfo": ""
+      }
+    ]
+  },
+  {
+    "AppID": 107100,
+    "Lines": [
+      {
+        "GameLines": [
+          "Bastion is a fantastic game.",
+          "It has an excellent soundtrack, and a great narrator.",
+          "Really, there's no reason for you not to play it."
+        ],
+        "ReactionAnim": "Happy",
+        "AdditionalInfo": ""
+      },
+      {
+        "GameLines": [
+          "By buying this on Steam, you've gotten some exclusive DLC.",
+          "You can only do it on a New Game+, though.",
+          "As for what it is... that's a surprise."
         ],
         "ReactionAnim": "Neutral",
         "AdditionalInfo": ""
