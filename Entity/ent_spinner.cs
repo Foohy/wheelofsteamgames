@@ -88,15 +88,18 @@ namespace WheelOfSteamGames.Entity
 
         void Mouse_ButtonUp(object sender, OpenTK.Input.MouseButtonEventArgs e)
         {
+            if (!this.Enabled) return;
+
             if (IsMouseDown)
             {
                 this.CurrentSpeed = GrabApproachSpeed * Utilities.F_DEG2RAD;
                 this.IsSpinning = true;
-                UpdateCursor();
 
                 if (OnSpin != null)
                     OnSpin(true);
             }
+
+            UpdateCursor();
 
             IsMouseDown = false;
         }
@@ -108,7 +111,6 @@ namespace WheelOfSteamGames.Entity
             if (IsOverSpinner( e.X, e.Y) && !this.IsSpinning)
             {
                 IsMouseDown = true;
-                UpdateCursor();
 
                 Vector2 ScreenPos = Utilities.Get3Dto2D(Wheel.Position);
                 this.MouseAngleOffset = (float)Math.Atan2(Utilities.window.Mouse.X - ScreenPos.X, Utilities.window.Mouse.Y - ScreenPos.Y) - this.CurrentAngle;// *Utilities.F_DEG2RAD;
@@ -116,6 +118,8 @@ namespace WheelOfSteamGames.Entity
                 if (OnWheelGrab != null)
                     OnWheelGrab();
             }
+
+            UpdateCursor();
         }
 
         void GUIManager_PostDrawHUD(EventArgs e)
