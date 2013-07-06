@@ -307,7 +307,7 @@ namespace WheelOfSteamGames.Entity
                 }
                 else if (Math.Abs(CurrentSpeed) > 0.001)
                 {
-                    CurrentSpeed -= (float)Utilities.ThinkTime * this.SpinFriction * Math.Sign(this.CurrentSpeed);
+                    CurrentSpeed -= (float)Utilities.ThinkTime * (this.SpinFriction + this.CurrentSpeed * 0.06f) * Math.Sign(this.CurrentSpeed);
                 }
                 else
                 {
