@@ -247,7 +247,7 @@ namespace WheelOfSteamGames.Entity
             //Draw the text itself
             Surface.SetNoTexture();
             Surface.SetDrawColor(0, 0, 0);
-            Surface.DrawWrappedText("windowtitle", this.curString, 25, 45, LineBubbleRes - 80);
+            Surface.DrawWrappedText("defaultTitle", this.curString, 25, 45, LineBubbleRes - 80);
 
             //Draw right directional arrow, if neccessary
             if (this.HasNextPage())

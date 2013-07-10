@@ -33,7 +33,7 @@ namespace WheelOfSteamGames
             /// <param name="delay">Time to wait before the hint is actually displayed</param>
             public Hint(string Text, float duration, float delay, string UniqueName)
             {
-                hintText = new Text("windowtitle", Text);
+                hintText = new Text("defaultTitle", Text);
                 Delay = (float)Utilities.Time + delay;
                 Duration = Delay + duration;
 

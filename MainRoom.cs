@@ -207,7 +207,7 @@ namespace WheelOfSteamGames
         {
             if (LoadingMat == null) { LoadingMat = Resource.GetMaterial("gui/loading"); }
             if (LoadingText == null) { LoadingText = new Text("game_large", "Loading data..."); LoadingText.SetScale(0.25f, 0.25f); }
-            if (LongLoadingText == null) { LongLoadingText = new Text("windowtitle", "Loading/Caching game data from the internet. Please be patient, this only happens once." ); }
+            if (LongLoadingText == null) { LongLoadingText = new Text("defaultTitle", "Loading/Caching game data from the internet. Please be patient, this only happens once." ); }
             if (CurrentGameText == null) { CurrentGameText = new Text("title", ""); }
 
             if (IsLoadingData)
