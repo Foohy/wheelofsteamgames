@@ -84,12 +84,23 @@ namespace WheelOfSteamGames
 
             Label questionText = GUIManager.Create<Label>(connectPanel);
             questionText.Autosize = true;
-            questionText.SetText("Please enter your steam community name");
+            questionText.SetText("Please enter your community URL");
             questionText.SetPos(15, 10);
+            /*
+            Label exampleText = GUIManager.Create<Label>(connectPanel);
+            exampleText.Autosize = true;
+            exampleText.SetText("http://steamcommunity.com/id/");
+            exampleText.SetPos(15, questionText.Position.Y + 15);
+            exampleText.SetColor(110, 110, 110);
 
+            Label exampleTextImportant = GUIManager.Create<Label>(connectPanel);
+            exampleTextImportant.Autosize = true;
+            exampleTextImportant.SetText("YOURNAMEHERE");
+            exampleTextImportant.SetPos(exampleText.Width + exampleText.Position.X, exampleText.Position.Y);
+            */
             TextInput input = GUIManager.Create<TextInput>(connectPanel);
             input.SetAnchorStyle(Panel.Anchors.Left | Panel.Anchors.Top | Panel.Anchors.Right);
-            input.SetPos(new Vector2(20, 30));
+            input.SetPos(new Vector2(20, questionText.Position.Y + 20));
             input.SetWidth(connectPanel.Width - 40);
             input.Name = "community_input";
 
@@ -198,7 +209,9 @@ namespace WheelOfSteamGames
                 usernameWindow.Remove();
                 usernameWindow = null;
             }
-            BeginLoadData(communityname, communityid );
+
+            GenericLoadCommunityID(communityname, communityid);
+            //BeginLoadData(communityname, communityid );
         }
 
         private const float LoadingSize = 30f;
@@ -236,7 +249,7 @@ namespace WheelOfSteamGames
             CurrentGame = obj.Name;
         }
 
-        delegate bool loadIsValidDel( string name, out string failReason );
+        delegate bool loadIsValidDel(string name, out string failReason, out bool outOfDate);
         static void acceptBtn_OnButtonPress(Panel sender)
         {
             string username = "";
@@ -248,20 +261,27 @@ namespace WheelOfSteamGames
             IsLoadingData = true;
             loadIsValidDel loadFunc = new loadIsValidDel(SteamCommunity.IsValidName);
             string FailReason = "Username is blank!";
-            IAsyncResult item = loadFunc.BeginInvoke(username, out FailReason, null, sender);
+            bool OutOfDate = true;
+            IAsyncResult item = loadFunc.BeginInvoke(username, out FailReason, out OutOfDate, null, sender);
 
             TaskManager.AddTask(item, (IAsyncResult res) =>
             {
                 IsLoadingData = false;
 
-                if (loadFunc.EndInvoke(out FailReason, res) && !string.IsNullOrEmpty(username))
+                if (loadFunc.EndInvoke(out FailReason, out OutOfDate, res) && !string.IsNullOrEmpty(username))
                 {
                     if (usernameWindow)
                     {
                         usernameWindow.Remove();
                         usernameWindow = null;
                     }
-                    BeginLoadData(username, SteamCommunity.CommunityID);
+
+                    //If the local cache is out of date, pop open a dialogue asking if they'd like to update
+                    if (OutOfDate && SteamCommunity.GetSaveExists(SteamCommunity.CommunityID))
+                    {
+                        ShowShouldUpdateCacheDialogue();
+                    }
+                    else BeginLoadData(SteamCommunity.CommunityID);
                 }
                 else
                 {
@@ -274,7 +294,6 @@ namespace WheelOfSteamGames
                 }
             });
         }
-
 
         static void connectPanelBtn_OnButtonPress(Panel sender)
         {
@@ -308,8 +327,46 @@ namespace WheelOfSteamGames
             connectPanel.ShouldDrawChildren = false;     
         }
 
-        delegate List<SteamCommunity.Game> LoadSteamDataDel( string communityName, string communityID, bool refresh=false );
-        public static void BeginLoadData( string CommunityName, string CommunityID, bool RefreshCache = false )
+        public static void GenericLoadCommunityID(string CommunityName, string CommunityID)
+        {
+            IsLoadingData = true;
+
+            loadIsValidDel loadFunc = new loadIsValidDel(SteamCommunity.IsValidCommunityID);
+            string FailReason = "Username is blank!";
+            bool OutOfDate = true;
+            IAsyncResult item = loadFunc.BeginInvoke(CommunityID, out FailReason, out OutOfDate, null, null);
+
+            TaskManager.AddTask(item, (IAsyncResult res) =>
+            {
+                IsLoadingData = false;
+
+                if (loadFunc.EndInvoke(out FailReason, out OutOfDate, res) && !string.IsNullOrEmpty(CommunityID))
+                {
+                    if (usernameWindow)
+                    {
+                        usernameWindow.Remove();
+                        usernameWindow = null;
+                    }
+
+                    //If the local cache is out of date, pop open a dialogue asking if they'd like to update
+                    if (OutOfDate && SteamCommunity.GetSaveExists(SteamCommunity.CommunityID))
+                    {
+                        ShowShouldUpdateCacheDialogue();
+                    }
+                    else BeginLoadData(SteamCommunity.CommunityID);
+                }
+                else
+                {
+                    Utilities.Print("Failed to load save information. {0}", Utilities.PrintCode.WARNING, FailReason);
+
+                    //Try loading the data directly from a save anyway
+                    BeginLoadData(CommunityID);
+                }
+            });
+        }
+
+        delegate List<SteamCommunity.Game> LoadSteamDataDel( string communityID, bool refresh=false );
+        public static void BeginLoadData( string CommunityID, bool RefreshCache = false )
         {
             IsCreatingCache = RefreshCache ? RefreshCache : !SteamCommunity.GetLoadFromCache(CommunityID);
 
@@ -317,7 +374,7 @@ namespace WheelOfSteamGames
 
             IsLoadingData = true;
             LoadSteamDataDel loadFunc = new LoadSteamDataDel(SteamCommunity.GetGames);
-            IAsyncResult item = loadFunc.BeginInvoke(CommunityName, CommunityID, IsCreatingCache, null, null);
+            IAsyncResult item = loadFunc.BeginInvoke(CommunityID, IsCreatingCache, null, null);
 
             TaskManager.AddTask(item, (IAsyncResult res) =>
                 {
@@ -328,6 +385,52 @@ namespace WheelOfSteamGames
                 } );
         }
 
+        public static void ShowShouldUpdateCacheDialogue()
+        {
+            Window window = GUIManager.Create<Window>();
+            window.SetTitle("Cache out of date");
+            window.Resizable = false;
+            window.SetWidth(380);
+            window.SetHeight(115);
+            window.SetEnableCloseButton(false);
+            window.SetPos(Utilities.window.Width / 2 - window.Width / 2, Utilities.window.Height / 2 - window.Height / 2);
+            window.MinimumSize = new Vector2(289, 115);
+
+            Label questionText = GUIManager.Create<Label>(window);
+            questionText.Autosize = true;
+            questionText.SetText("Local cache is out of date. Would you like to update it?");
+            questionText.SetPos(15, 10);
+
+            Button noBtn = GUIManager.Create<Button>(window);
+            noBtn.SetText("No");
+            noBtn.SetWidth(120);
+            noBtn.SetHeight(20);
+            noBtn.SetPos(new Vector2(0, window.Height - (noBtn.Height + 20)));
+            noBtn.AlignRight(20);
+            noBtn.SetAnchorStyle(Panel.Anchors.Bottom | Panel.Anchors.Right);
+            noBtn.OnButtonPress += (Panel sender) =>
+            {
+                if (IsLoadingData) return;
+
+                BeginLoadData(SteamCommunity.CommunityID, false);
+                window.Remove();
+            };
+
+            Button yesBtn = GUIManager.Create<Button>(window);
+            yesBtn.SetText("Yes");
+            yesBtn.SetWidth(noBtn.Position.X - 40);
+            yesBtn.SetHeight(20);
+            yesBtn.SetPos(new Vector2(20, noBtn.Position.Y));
+            yesBtn.AlignLeft(20);
+            yesBtn.SetAnchorStyle(Panel.Anchors.Bottom | Panel.Anchors.Right | Panel.Anchors.Left);
+            yesBtn.OnButtonPress += (Panel sender) =>
+            {
+                if (IsLoadingData) return;
+
+                BeginLoadData(SteamCommunity.CommunityID, true);
+                window.Remove();
+            };
+        }
 
         public static void EndSteamDataLoad(List<SteamCommunity.Game> Games)
         {
