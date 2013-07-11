@@ -32,6 +32,21 @@ namespace WheelOfSteamGames
             engine = new Engine(this); //Create the engine class that'll do all the heavy lifting
             engine.OnRenderSceneOpaque += new Action<FrameEventArgs>(RenderSceneOpaque);
             engine.OnRenderSceneTranslucent += new Action<FrameEventArgs>(RenderSceneTranslucent);
+
+            try
+            {
+                this.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Windows.Forms.Application.ExecutablePath);
+            }
+            catch (Exception e)
+            {
+                Utilities.Print("Failed to load icon! {0}", Utilities.PrintCode.WARNING, e.Message);
+            }
+
+            if (!settings.ShowConsole)
+            {
+                IntPtr consoleHandle = ConsoleManager.GetConsoleWindow();
+                ConsoleManager.ShowWindow(consoleHandle, ConsoleManager.SW_HIDE);
+            }
         }
 
 
@@ -111,6 +126,10 @@ namespace WheelOfSteamGames
         [STAThread]
         static void Main(string[] args)
         {
+            Utilities.Print("==================================", Utilities.PrintCode.INFO);
+            Utilities.Print("ENGINE STARTUP", Utilities.PrintCode.INFO);
+            Utilities.Print("==================================\n", Utilities.PrintCode.INFO);
+
             using (Program game = new Program(new Settings(SettingsFile)))
             {
                 game.Run(60.0);
