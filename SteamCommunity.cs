@@ -43,6 +43,7 @@ namespace WheelOfSteamGames
         public static event Action<Game> OnLoadGame;
 
         public const string SteamURL = "http://steamcommunity.com/id/{0}/games?tab=all&xml=1";
+        public const string ProfileURL = "http://steamcommunity.com/profiles/{0}/games?tab=all&xml=1";
         public const string StoreURL = "http://store.steampowered.com/api/appdetails/?appids={0}";
         public const string SavesFolder = "Saves/";
 
@@ -51,39 +52,62 @@ namespace WheelOfSteamGames
         public static List<Game> Games = new List<Game>();
         public static bool IsOnline { get; private set; }
 
-        public static bool IsValidName(string communityName, out string reason )
+        public static bool IsValidName(string communityName, out string reason, out bool outOfDate )
+        {
+            outOfDate = true;
+            reason = "No reason specified";
+            string url = string.Format(SteamURL, communityName);
+
+            return getValidProfile(url, out reason, out outOfDate);
+        }
+
+        public static bool IsValidCommunityID(string communityID, out string reason, out bool outOfDate)
+        {
+            outOfDate = true;
+            reason = "No reason specified";
+            string url = string.Format(ProfileURL, communityID);
+
+            return getValidProfile(url, out reason, out outOfDate);
+        }
+
+        private static bool getValidProfile(string url, out string reason, out bool outOfDate)
         {
             IsOnline = false;
-            bool valid = true;
+            outOfDate = true;
             reason = "No reason specified";
+            bool valid = true;
+
             try
             {
-                string url = string.Format(SteamURL, communityName);
                 XmlReaderSettings settings = new XmlReaderSettings();
                 settings.DtdProcessing = DtdProcessing.Ignore;
                 using (XmlReader reader = XmlReader.Create(url, settings))
                 {
-                    
-                    while (reader.Read())
-                    {
-                        if (reader.IsStartElement())
-                        {
-                            //Do some preliminary parsing before we start checking out some steam gaemz
-                            switch (reader.Name)
-                            {
-                                case "error":
-                                    reader.Read();
-                                    reason = reader.Value;
-                                    valid = false;
-                                    break;
+                    XmlDocument doc = new XmlDocument();
+                    doc.Load(reader);
 
-                                case "steamID64":
-                                    reader.Read();
-                                    CommunityID = reader.Value;
-                                    IsOnline = true;
-                                    break;
-                            }
-                        }
+                    XmlNode errornode = doc.SelectSingleNode("response/error");
+                    XmlNode successnode = doc.SelectSingleNode("gamesList/steamID64");
+
+                    if (errornode != null)
+                    {
+                        reason = errornode.InnerText;
+                        valid = false;
+                    }
+                    else if (successnode != null)
+                    {
+                        CommunityID = successnode.InnerText;
+                        IsOnline = true;
+                        valid = true;
+
+                        XmlNode gamesnode = doc.SelectSingleNode("gamesList/games");
+                        outOfDate = gamesnode.ChildNodes.Count != GetLocalSaveGameCount(CommunityID);
+
+                        SteamName = doc.SelectSingleNode("gamesList/steamID").InnerText;
+                    }
+                    else //some other mystery problem
+                    {
+                        valid = false;
                     }
                 }
             }
@@ -92,11 +116,11 @@ namespace WheelOfSteamGames
             return valid;
         }
 
-        public static List<Game> GetGamesFromCommunity(string communityname)
+        public static List<Game> GetGamesFromCommunity(string communityID)
         {
             Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId);
             Games.Clear();
-            string url = string.Format(SteamURL, communityname);
+            string url = string.Format(ProfileURL, communityID);
             using (XmlReader reader = XmlReader.Create(url))
             {
                 while (reader.Read())
@@ -145,21 +169,36 @@ namespace WheelOfSteamGames
             return !string.IsNullOrEmpty(filename) && File.Exists(filename);
         }
 
-        public static List<Game> GetGames(string communityname, string communityid, bool RefreshCache=false )
+        public static List<Game> GetGames(string communityid, bool RefreshCache=false )
         {
-            string filename = GetSave(communityid);
-
             if (RefreshCache || !GetLoadFromCache(communityid))
             {
                 Console.WriteLine("Loading data from internet!");
-                return GetGamesFromCommunity(communityname);
+                return GetGamesFromCommunity(communityid);
             }
             else
             {
+                string filename = GetSave(communityid);
+
                 Console.WriteLine("Loading data from file!");
                 string json = File.ReadAllText(filename);
                 return JsonConvert.DeserializeObject<List<Game>>(json);
             }
+        }
+
+        public static int GetLocalSaveGameCount(string communityID)
+        {
+            string filename = GetSave(communityID);
+            if (string.IsNullOrEmpty( filename)) return -1;
+
+            Console.WriteLine("Retrieving cached game count...");
+            string json = File.ReadAllText(filename);
+            return JsonConvert.DeserializeObject<List<Game>>(json).Count;
+        }
+
+        public static bool GetSaveExists(string communityID)
+        {
+            return !(string.IsNullOrEmpty(GetSave(communityID)));
         }
 
         private static string GetSave(string communityID)
