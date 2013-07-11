@@ -466,6 +466,19 @@ namespace WheelOfSteamGames
                         HintManager.RemoveHintNice("spin_controls_hint");
                     }
 
+                    //If we press enter, start the currently selected game
+                    if (e.Key == OpenTK.Input.Key.Enter || e.Key == OpenTK.Input.Key.KeypadEnter)
+                    {
+                        var Game = Spinner.GetCurrentGame();
+                        if (Game == null || Game.AppID < 1) return;
+
+                        System.Diagnostics.ProcessStartInfo start = new System.Diagnostics.ProcessStartInfo(string.Format("steam://run/{0}", Game.AppID ) );
+                        System.Diagnostics.Process.Start(start);
+
+                        //Have fun!
+                        Utilities.window.Exit();
+                    }
+
                     //Make the a-meow-nncer say the next/previous line of a stack of lines about a nerd game.
                     if (e.Key == OpenTK.Input.Key.Left || e.Key == OpenTK.Input.Key.A)
                         Actor.SayPreviousPage();
@@ -594,6 +607,9 @@ namespace WheelOfSteamGames
         {
             Actor.SetTransitionAnimation("announcer_wheel_to_player", "announcer_idle_player");
             Actor.SayLine(game.AppID);
+
+            HintManager.AddHint("Press enter to start game!", 0, 4, "hint_startgame");
+
             Console.WriteLine(string.Format("Landed on \"{0}\" ({1})", game.Name, game.AppID));
         }
 
@@ -608,6 +624,7 @@ namespace WheelOfSteamGames
                 Actor.SetTransitionAnimation("announcer_player_to_wheel", "announcer_idle_wheel");
 
             Actor.FadeLine();
+            HintManager.RemoveHintNice("hint_startgame");
         }
 
 

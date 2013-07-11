@@ -270,6 +270,11 @@ namespace WheelOfSteamGames.Entity
             return ((float)Math.Cos(angle / (this.Games.Count / 4)) * 10) / Utilities.F_RAD2DEG;
         }
 
+        public SteamCommunity.Game GetCurrentGame()
+        {
+            return GetCurrentGame(GetRegionFromAngle(CurrentAngle));
+        }
+
         public SteamCommunity.Game GetCurrentGame( int CurRegion )
         {
             return CurRegion > -1 ? Games[CurRegion] : SteamCommunity.Game.Default;
@@ -334,7 +339,7 @@ namespace WheelOfSteamGames.Entity
             CurrentGameText.SetText(CurrentGame.AppID != -1 ? CurrentGame.Name : "No game");
         }
 
-        public int GetRegionFromAngle(float angle)
+        private int GetRegionFromAngle(float angle)
         {
             if (Games.Count <= 0) return -1;
 
