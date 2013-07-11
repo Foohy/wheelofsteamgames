@@ -40,6 +40,7 @@ namespace WheelOfSteamGames
                 float HintScale = (float)Utilities.window.Height / 700f;
                 hintText.SetScale(HintScale, HintScale);
                 hintText.SetPos((Utilities.window.Width / 2) - (hintText.GetTextLength() / 2) * hintText.ScaleW, Utilities.window.Height + 10);
+                this.YReal = this.YSmooth = hintText.Y;
 
                 Name = UniqueName;
             }
@@ -81,7 +82,7 @@ namespace WheelOfSteamGames
                     }
                     else
                     {
-                        h.YReal = Utilities.window.Height - (h.hintText.GetTextHeight() + 10);
+                        h.YReal = Utilities.window.Height - (h.hintText.GetTextHeight() + 20 * i + 20);
                         h.YSmooth = Utilities.Lerp(h.YSmooth, h.YReal, (float)Utilities.Frametime * MoveSpeed);
                     }
 
