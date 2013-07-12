@@ -29,6 +29,7 @@ namespace WheelOfSteamGames
             public bool HasAchievements;
             public bool HasLevelEditor;
             public bool HasHDR;
+            public bool HasTradingCards;
 
             public static Game Default = new Game()
             {
@@ -366,6 +367,10 @@ namespace WheelOfSteamGames
 
                             case "22":
                                 game.HasAchievements = true;
+                                break;
+
+                            case "29":
+                                game.HasTradingCards = true;
                                 break;
                         }
                     }

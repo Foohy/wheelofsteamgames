@@ -589,10 +589,11 @@ namespace WheelOfSteamGames
             Menu.AddCheckBox("Show Singleplayer Games", "game_single");
             Menu.AddCheckBox("Show Multiplayer Games", "game_multi");
             Menu.AddCheckBox("Show Games with VAC", "game_vac");
-            Menu.AddCheckBox("Show Favorites only", "game_favorites");
+            //Menu.AddCheckBox("Show Favorites only", "game_favorites");
             Menu.AddCheckBox("Show Games with HDR", "game_hdr");
             Menu.AddCheckBox("Show Recently played games", "game_2weeks");
             Menu.AddCheckBox("Show Games never played", "game_never");
+            Menu.AddCheckBox("Show Games with trading cards", "game_tradecards");
             Menu.AddCheckBox("Show Games with custom text", "game_meow_text");
             Menu.HideToLeft();
 
@@ -660,6 +661,9 @@ namespace WheelOfSteamGames
                     return false;
 
                 if (Menu.GetCheckboxChecked("game_hdr") && !game.HasHDR)
+                    return false;
+
+                if (Menu.GetCheckboxChecked("game_tradecards") && !game.HasTradingCards)
                     return false;
 
                 if (Menu.GetCheckboxChecked("game_2weeks") && game.HoursLast2Weeks <= 0)
