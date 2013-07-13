@@ -303,10 +303,12 @@ namespace WheelOfSteamGames
             Panel connectPanel = sender.Parent.Parent.GetChildByName("panel_connect");
             if (!connectPanel) { Utilities.Print("Saves panel not found!", Utilities.PrintCode.WARNING); return; }
 
-            savesPanel.Enabled = false;
+            //Disable the saves panel
+            savesPanel.SetEnabled(false, true);
             savesPanel.ShouldDrawChildren = false;
 
-            connectPanel.Enabled = true;
+            //Enable the connect panel
+            connectPanel.SetEnabled(true, true);
             connectPanel.ShouldDrawChildren = true;
             connectPanel.Parent.SetHeight(115);
         }
@@ -319,11 +321,13 @@ namespace WheelOfSteamGames
             Panel savesPanel = sender.Parent.Parent.GetChildByName("panel_saves");
             if (!savesPanel) { Utilities.Print("Saves panel not found!", Utilities.PrintCode.WARNING); return; }
 
+            //Enable the saves panel
             savesPanel.Parent.SetHeight(145);
-            savesPanel.Enabled = true;
+            savesPanel.SetEnabled(true, true);
             savesPanel.ShouldDrawChildren = true;
 
-            connectPanel.Enabled = false;
+            //Disable the connect panel
+            connectPanel.SetEnabled(false, true);
             connectPanel.ShouldDrawChildren = false;     
         }
 
