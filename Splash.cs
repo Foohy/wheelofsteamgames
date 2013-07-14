@@ -24,7 +24,7 @@ namespace WheelOfSteamGames
         public static void Initialize()
         {
             splashMat = Resource.GetTexture("pt_splash.png");
-            StartTime = Utilities.Time;
+            StartTime = Utilities.Time + 1 ;
 
             GUIManager.PostDrawHUD += new GUIManager.OnDrawHUD(GUIManager_PostDrawHUD);
         }
@@ -52,23 +52,30 @@ namespace WheelOfSteamGames
 
             if (FadingIn)
             {
-                Fade = Utilities.Lerp(0, 1, (float)(Utilities.Time - StartTime));
-
-                if (Fade >= 1)
+                if (Utilities.Time > StartTime)
                 {
-                    FadingIn = false;
-                    FadeOutTime = Utilities.Time + 2;
+
+                    Fade = Utilities.Lerp(0, 1, (float)(Utilities.Time - StartTime) * 2.0f);
+
+                    if (Fade >= 1)
+                    {
+                        FadingIn = false;
+                        FadeOutTime = Utilities.Time + 2;
+                    }
                 }
             }
-            else if (Utilities.Time > FadeOutTime && Fade > 0)
+            else
             {
-                Fade = Utilities.Lerp(1, 0, (float)(Utilities.Time - (FadeOutTime)));
-            }
-            else if (Fade < 0)
-            {
-                MainRoom.Initialize();
-                SplashOver = true;
-                GUIManager.PostDrawHUD -= new GUIManager.OnDrawHUD(GUIManager_PostDrawHUD);
+                if (Utilities.Time > FadeOutTime && Fade > 0)
+                {
+                    Fade = Utilities.Lerp(1, 0, (float)(Utilities.Time - (FadeOutTime)) * 2.0f);
+                }
+                else if (Fade < 0)
+                {
+                    MainRoom.Initialize();
+                    SplashOver = true;
+                    GUIManager.PostDrawHUD -= new GUIManager.OnDrawHUD(GUIManager_PostDrawHUD);
+                }
             }
         }
     }
