@@ -94,11 +94,19 @@ namespace WheelOfSteamGames.Entity
 
             if (IsMouseDown)
             {
-                this.CurrentSpeed = GrabApproachSpeed * Utilities.F_DEG2RAD;
-                this.IsSpinning = true;
+                if (GrabApproachSpeed > 2.0)
+                {
+                    this.CurrentSpeed = GrabApproachSpeed * Utilities.F_DEG2RAD;
+                    this.IsSpinning = true;
 
-                if (OnSpin != null)
-                    OnSpin(true);
+                    if (OnSpin != null)
+                        OnSpin(true);
+                }
+                else
+                {
+                    if (OnSpinnerStop != null)
+                        OnSpinnerStop(null);
+                }
             }
 
             UpdateCursor();

@@ -619,11 +619,14 @@ namespace WheelOfSteamGames
         static void Spinner_OnSpinnerStop(SteamCommunity.Game game)
         {
             Actor.SetTransitionAnimation("announcer_wheel_to_player", "announcer_idle_player");
-            Actor.SayLine(game.AppID);
 
-            HintManager.AddHint("Press enter to start game!", 0, 4, "hint_startgame");
+            if (game != null)
+            {
+                Actor.SayLine(game.AppID);
 
-            Console.WriteLine(string.Format("Landed on \"{0}\" ({1})", game.Name, game.AppID));
+                HintManager.AddHint("Press enter to start game!", 0, 4, "hint_startgame");
+                Console.WriteLine(string.Format("Landed on \"{0}\" ({1})", game.Name, game.AppID));
+            }
         }
 
         static void Spinner_OnWheelGrab()
