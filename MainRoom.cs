@@ -561,7 +561,7 @@ namespace WheelOfSteamGames
             spotlight.SetPos(new Vector3(7.56424f, 22.80356f, 33.25445f));
             spotlight.Enabled = false;
 
-            Audio.Precache("Resources/Audio/light_on.wav");
+            Audio.Precache("Resources/Audio/light_on.mp3");
 
             Spinner = EntManager.Create<ent_spinner>();
             Spinner.Spawn();
@@ -721,7 +721,7 @@ namespace WheelOfSteamGames
                 Started = true;
                 spotlight.Enabled = true;
                 Spinner.Enabled = true;
-                Audio.PlaySound("Resources/Audio/light_on.wav");
+                Audio.PlaySound("Resources/Audio/light_on.mp3");
                 Actor.ShouldDraw = true;
                 LightingTechnique.EnableEnvironmentLight(true);
             }
