@@ -22,7 +22,7 @@ namespace WheelOfSteamGames.Entity
         };
 
         public List<SteamCommunity.Game> Games;
-        public float SpinFriction = 0.0083f;
+        public float SpinFriction = 0.0063f;
         public float CurrentSpeed { get; private set; }
         public float CurrentAngle { get; private set; }
         public float SpinupForce { get; set; }
@@ -35,6 +35,7 @@ namespace WheelOfSteamGames.Entity
         public event Action OnWheelGrab;
 
         private double SpeedTime = 0;
+        private double LastSoundTime = 0;
         private Vector3 PaddlePositionOffset = new Vector3(0, 5.2f, 0);
         private float LastSoundRegion = 0;
         private float ElementSizeRadians = 0; //Size of each element, in radians
@@ -51,6 +52,7 @@ namespace WheelOfSteamGames.Entity
         private int Diameter = 815; //848;
         private Vector2 Center = new Vector2(518, 597);
         const int TextureScale = 2;
+        const float MinSoundInterval = 0.022f;
 
         public override void Init()
         {
@@ -316,7 +318,7 @@ namespace WheelOfSteamGames.Entity
                 }
                 else if (Math.Abs(this.CurrentSpeed) > 0.001)
                 {
-                    CurrentSpeed -= (float)Utilities.ThinkTime * (this.SpinFriction + Math.Abs(this.CurrentSpeed) * 0.06f) * Math.Sign(this.CurrentSpeed); ;
+                    CurrentSpeed -= (float)Utilities.ThinkTime * (this.SpinFriction + Math.Abs(this.CurrentSpeed) * 0.16f) * Math.Sign(this.CurrentSpeed); ;
                 }
                 else
                 {
@@ -328,9 +330,10 @@ namespace WheelOfSteamGames.Entity
             }
 
 
-            if (CurrentRegion != LastSoundRegion)
+            if (CurrentRegion != LastSoundRegion && Utilities.Time - LastSoundTime > MinSoundInterval )
             {
                 LastSoundRegion = CurrentRegion;
+                LastSoundTime = Utilities.Time;
                 Audio.PlaySound("Resources/Audio/spinner_click.wav", 0.35f, Utilities.Rand.Next(35280, 52920));
             }
 
