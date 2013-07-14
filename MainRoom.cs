@@ -726,7 +726,7 @@ namespace WheelOfSteamGames
             }
         }
 
-        private static Vector3 worldpos = new Vector3(0, -0.25f, 0); //QUICK WORLD OFFSET
+        private static Vector3 worldpos = new Vector3(0, -1.35f, 0); //QUICK WORLD OFFSET
         public static void Draw()
         {
             if (WorldMesh != null)
