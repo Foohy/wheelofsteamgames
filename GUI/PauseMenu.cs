@@ -54,7 +54,6 @@ namespace WheelOfSteamGames.GUI
             Quit.OnButtonPress += new Button.OnButtonPressDel(Quit_OnButtonPress);
 
             TitlePanel = GUIManager.Create<Panel>(this);
-            //TitlePanel.SetMaterial(Resource.GetTexture("gui/title.png"));
             TitlePanel.SetHeight(25);
             TitlePanel.SetWidth(this.Width);
             TitlePanel.SetPos(new Vector2(0, -TitlePanel.Height));
@@ -151,8 +150,11 @@ namespace WheelOfSteamGames.GUI
 
         public override void Draw()
         {
-            this.SetPos(Utilities.Lerp(this.Position.X, XGoal, (float)Utilities.Frametime * 10), Utilities.window.Height / 2 - (this.Height + TitlePanel.Height) / 2);
-            Quit.SetPos(new Vector2(this.Position.X, Quit.Position.Y));
+            if (Math.Abs(XGoal - this.Position.X) > 0.1)
+            {
+                this.SetPos(Utilities.Lerp(this.Position.X, XGoal, (float)Utilities.Frametime * 10), Utilities.window.Height / 2 - (this.Height + TitlePanel.Height) / 2);
+                Quit.SetPos(new Vector2(this.Position.X, Quit.Position.Y));
+            }
 
             base.Draw();
         }
