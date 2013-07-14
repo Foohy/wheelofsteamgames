@@ -361,7 +361,7 @@ namespace WheelOfSteamGames
                 }
                 else
                 {
-                    Utilities.Print("Failed to load save information. {0}", Utilities.PrintCode.WARNING, FailReason);
+                    Utilities.Print("Failed to load profile information. {0}", Utilities.PrintCode.WARNING, FailReason);
 
                     //Try loading the data directly from a save anyway
                     BeginLoadData(CommunityID);
@@ -372,6 +372,12 @@ namespace WheelOfSteamGames
         delegate List<SteamCommunity.Game> LoadSteamDataDel( string communityID, bool refresh=false );
         public static void BeginLoadData( string CommunityID, bool RefreshCache = false )
         {
+            if (string.IsNullOrEmpty(CommunityID))
+            {
+                Utilities.Print("Error loading data! Community ID is null. Something is wrong, tell foohy.", Utilities.PrintCode.ERROR);
+                return;
+            }
+
             IsCreatingCache = RefreshCache ? RefreshCache : !SteamCommunity.GetLoadFromCache(CommunityID);
 
             Menu.HideToLeft();
@@ -439,6 +445,7 @@ namespace WheelOfSteamGames
         public static void EndSteamDataLoad(List<SteamCommunity.Game> Games)
         {
             AllGames = Games;
+            CurrentGame = "No Game";
             Console.WriteLine("GOT SOME GAMES FOR YA: {0}", AllGames != null ? AllGames.Count.ToString() : "NULL");
             //Create the spinner elements
             var FilteredGames = GetFilteredGamesList();
@@ -719,10 +726,12 @@ namespace WheelOfSteamGames
             }
         }
 
+        private static Vector3 worldpos = new Vector3(0, -0.25f, 0); //QUICK WORLD OFFSET
         public static void Draw()
         {
             if (WorldMesh != null)
             {
+                WorldMesh.Position = worldpos;
                 WorldMesh.Draw();
             }
         }
