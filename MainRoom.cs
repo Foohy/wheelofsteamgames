@@ -596,6 +596,7 @@ namespace WheelOfSteamGames
             Menu = GUIManager.Create<GUI.PauseMenu>();
             Menu.SetWidth(220);
             Menu.SetHeight(400);
+            Menu.SetPos(-Menu.Width - 200, Menu.Position.Y);
             Menu.SetTitle("Filters");
             Menu.AddCheckBox("Show Singleplayer Games", "game_single");
             Menu.AddCheckBox("Show Multiplayer Games", "game_multi");

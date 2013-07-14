@@ -72,6 +72,7 @@
     <Compile Include="MainRoom.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Splash.cs" />
     <Compile Include="Steam.cs" />
     <Compile Include="SteamCommunity.cs" />
     <Compile Include="TaskManager.cs" />

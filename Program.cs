@@ -57,7 +57,7 @@ namespace WheelOfSteamGames
             base.OnLoad(e);
             engine.OnLoad(e);
 
-            MainRoom.Initialize();
+            Splash.Initialize();
         }
 
         /// <summary>
@@ -80,6 +80,7 @@ namespace WheelOfSteamGames
         {
             base.OnUpdateFrame(e);
             engine.OnUpdateFrame(e);
+
             MainRoom.Think();
 
             //if (this.Keyboard[Key.Escape]) this.Exit();
