@@ -1,0 +1,6 @@
+{
+	"shader" 		: "default",
+	"basetexture" 	: "models/props/foilage/ivy01.png",
+	"nocull"		: true,
+	"alphatest"		: true
+}

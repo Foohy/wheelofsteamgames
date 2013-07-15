@@ -1,0 +1,13 @@
+C:\Users\Scott\Documents\GitHub\gravity_car\Balance\bin\Debug\bass.dll
+C:\Users\Scott\Documents\GitHub\gravity_car\Balance\bin\Debug\Balance.exe
+C:\Users\Scott\Documents\GitHub\gravity_car\Balance\bin\Debug\Balance.pdb
+C:\Users\Scott\Documents\GitHub\gravity_car\Balance\bin\Debug\Engine.dll
+C:\Users\Scott\Documents\GitHub\gravity_car\Balance\bin\Debug\FarseerPhysics.dll
+C:\Users\Scott\Documents\GitHub\gravity_car\Balance\bin\Debug\OpenTK.dll
+C:\Users\Scott\Documents\GitHub\gravity_car\Balance\bin\Debug\Bass.Net.dll
+C:\Users\Scott\Documents\GitHub\gravity_car\Balance\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Scott\Documents\GitHub\gravity_car\Balance\bin\Debug\Engine.pdb
+C:\Users\Scott\Documents\GitHub\gravity_car\Balance\obj\x86\Debug\Balance.exe
+C:\Users\Scott\Documents\GitHub\gravity_car\Balance\obj\x86\Debug\Balance.pdb
+C:\Users\Scott\Documents\GitHub\gravity_car\Balance\bin\Debug\readme.txt
+C:\Users\Scott\Documents\GitHub\gravity_car\Balance\obj\x86\Debug\Balance.csprojResolveAssemblyReference.cache

@@ -1,0 +1,8 @@
+{
+'shader' 		: 'default_lighting',
+'specpower' 		: '10.0000',
+'basetexture' 		: 'textures/chain_texture.tga',
+'alphamap' 		: 'textures/chain_texture_mask.tga',
+'alphatest' 		: 'true',
+'normalmap' 		: 'textures/chain_texture_bump.png',
+}

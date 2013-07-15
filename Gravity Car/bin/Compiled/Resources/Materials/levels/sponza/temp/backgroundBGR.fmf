@@ -1,0 +1,5 @@
+{
+	'shader' 		: 'default_lighting',
+	'Basetexture' 	: 'levels/sponza/backgroundBGR.tga',
+	'normalmap' 	: 'levels/sponza/background_bump.png',
+}

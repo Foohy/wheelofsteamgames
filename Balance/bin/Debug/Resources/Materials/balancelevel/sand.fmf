@@ -1,0 +1,5 @@
+{
+	'shader'				: 'default_lighting',
+	'basetexture'			: 'balancelevel/sand_diffuse.png',
+	'normalmap'				: 'balancelevel/sand_norm.png',
+}

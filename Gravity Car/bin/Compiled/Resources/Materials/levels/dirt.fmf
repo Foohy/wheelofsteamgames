@@ -1,0 +1,8 @@
+{
+	"shader" 		: "default_lighting",
+	"basetexture" 	: "levels/dirt.png",
+	"alphamap"		: "models/props/alpha.png",
+	
+	"specPower"		: "16.0",
+	"specIntensity" : "5.0",
+}

@@ -1,0 +1,4 @@
+{
+	'shader'				: 'default_lighting',
+	'basetexture'			: 'models/wood_log.png',
+}

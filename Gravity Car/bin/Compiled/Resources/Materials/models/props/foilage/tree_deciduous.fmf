@@ -1,0 +1,6 @@
+{
+	"shader" 		: "default_lighting",
+	"basetexture" 	: "models/props/foilage/tree_deciduous.png",
+	"nocull"		: true,
+	"alphatest"		: true
+}

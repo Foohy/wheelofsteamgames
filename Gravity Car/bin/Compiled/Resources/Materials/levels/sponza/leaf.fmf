@@ -1,0 +1,8 @@
+{
+'shader' 		: 'default_lighting',
+'specpower' 		: '10.0000',
+'basetexture' 		: 'textures/sponza_thorn_diff.tga',
+'alphamap' 		: 'textures/sponza_thorn_mask.tga',
+'alphatest' 		: 'true',
+'normalmap' 		: 'textures/sponza_thorn_bump.png',
+}

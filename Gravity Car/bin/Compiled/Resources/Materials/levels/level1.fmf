@@ -1,0 +1,7 @@
+{
+	"shader" 		: "default_lighting",
+	"basetexture" 	: "engine/white.png",
+	"normalmap"     : "normalmap.png",
+	"specPower"		: "2.0",
+	"specIntensity" : "1.0",
+}

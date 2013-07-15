@@ -1,0 +1,6 @@
+{
+'shader' 		: 'default_lighting',
+'specpower' 		: '10.0000',
+'basetexture' 		: 'textures/spnza_bricks_a_diff.tga',
+'normalmap' 		: 'textures/spnza_bricks_a_diff.tga',
+}

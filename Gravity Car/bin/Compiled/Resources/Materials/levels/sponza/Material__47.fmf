@@ -1,0 +1,4 @@
+{
+'shader' 		: 'default_lighting',
+'specpower' 		: '10.0000',
+}

@@ -1,0 +1,6 @@
+{
+'shader' 		: 'default_lighting',
+'specpower' 		: '10.0000',
+'basetexture' 		: 'textures/sponza_column_a_diff.tga',
+'normalmap' 		: 'textures/sponza_column_a_bump.png',
+}

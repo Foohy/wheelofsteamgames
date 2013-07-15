@@ -1,0 +1,5 @@
+{
+'shader' 		: 'default_lighting',
+'specpower' 		: '10.0000',
+'basetexture' 		: 'textures/sponza_floor_a_diff.tga',
+}

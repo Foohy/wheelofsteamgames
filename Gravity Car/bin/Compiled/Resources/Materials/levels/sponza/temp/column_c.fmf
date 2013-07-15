@@ -1,0 +1,6 @@
+{
+	'shader' 		: 'default_lighting',
+	'Basetexture' 	: 'levels/sponza/sponza_column_c_diff.tga',
+	'normalmap' 	: 'levels/sponza/sponza_column_c_bump.png',
+	'specmap' 		: 'levels/sponza/sponza_column_c_spec.tga',
+}
