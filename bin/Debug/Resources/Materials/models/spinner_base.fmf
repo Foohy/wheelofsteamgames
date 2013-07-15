@@ -1,4 +1,0 @@
-{
-	'shader' 		: 'default_lighting',
-	'basetexture' 	: 'models/spinner_base.png',
-}

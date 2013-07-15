@@ -1,6 +1,0 @@
-{
-	"shader" 		: "default_lighting",
-	"basetexture" 	: "models/props/speaker.png",
-	"specPower" 	: "32.0",
-	"specIntensity"	: "2.0"
-}

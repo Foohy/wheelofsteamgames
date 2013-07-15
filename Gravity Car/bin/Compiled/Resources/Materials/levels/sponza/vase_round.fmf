@@ -1,6 +1,0 @@
-{
-'shader' 		: 'default_lighting',
-'specpower' 		: '10.0000',
-'basetexture' 		: 'textures/vase_round.tga',
-'normalmap' 		: 'textures/vase_round_bump.png',
-}

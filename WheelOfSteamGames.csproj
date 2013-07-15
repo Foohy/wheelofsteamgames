@@ -40,9 +40,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Engine">
-      <HintPath>libs\Engine.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>libs\Newtonsoft.Json.dll</HintPath>
@@ -81,17 +78,17 @@
     <Compile Include="TaskManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Two and a Half Dimensions\OlegEngine.csproj">
+      <Project>{78402D63-5943-49C3-9DA8-D957BE2E96A6}</Project>
+      <Name>OlegEngine</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bass.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="cat.ico" />
     <Content Include="clock.ico" />
-    <Content Include="FarseerPhysics.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,6 +1,0 @@
-{
-	'shader'				: 'default',
-	'basetexture'			: 'gui/loading.gif',
-	'isanimated'			: 'true',
-	'framelength'			: '0.05'
-}

@@ -1,7 +1,0 @@
-{
-'shader' 		: 'default_lighting',
-'specpower' 		: '10.0000',
-'basetexture' 		: 'textures/vase_plant.tga',
-'alphamap' 		: 'textures/vase_plant_mask.tga',
-'alphatest' 		: 'true',
-}

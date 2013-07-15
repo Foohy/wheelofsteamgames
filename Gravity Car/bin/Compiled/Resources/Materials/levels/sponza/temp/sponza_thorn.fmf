@@ -1,9 +1,0 @@
-{
-	'shader' 		: 'default_lighting',
-	'Basetexture' 	: 'levels/sponza/sponza_thorn_diff.tga',
-	'normalmap' 	: 'levels/sponza/sponza_thorn_bump.png',
-	'alphamap' 		: 'levels/sponza/sponza_thorn_mask.png',
-	'specmap' 		: 'levels/sponza/sponza_thorn_spec.png',
-	
-	'alphatest' 	: 'true',
-}

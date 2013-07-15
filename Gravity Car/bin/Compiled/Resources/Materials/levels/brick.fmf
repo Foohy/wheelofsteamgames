@@ -1,9 +1,0 @@
-{
-	"shader" 		: "default_lighting",
-	"basetexture" 	: "levels/brick.png",
-	"normalmap" 	: "levels/brick_normal.png",
-	"specmap" 		: "levels/brick_spec.png",
-	
-	"specPower"		: "16.0",
-	"specIntensity" : "5.0",
-}

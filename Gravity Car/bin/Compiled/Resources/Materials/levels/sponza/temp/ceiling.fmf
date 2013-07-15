@@ -1,5 +1,0 @@
-{
-	'shader' 		: 'default_lighting',
-	'Basetexture' 	: 'levels/sponza/sponza_ceiling_a_diff.tga',
-	'specmap' 		: 'levels/sponza/sponza_ceiling_a_spec.tga',
-}

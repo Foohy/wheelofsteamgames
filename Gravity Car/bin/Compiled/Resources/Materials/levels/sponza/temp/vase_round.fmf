@@ -1,6 +1,0 @@
-{
-	'shader' 		: 'default_lighting',
-	'Basetexture' 	: 'levels/sponza/vase_round.tga',
-	'normalmap'		: 'levels/sponza/vase_round_bump.png',
-	'specmap'		: 'levels/sponza/vase_round_spec.tga',
-}

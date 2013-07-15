@@ -1,7 +1,0 @@
-{
-	'shader' 		: 'default_lighting',
-	'Basetexture' 	: 'levels/sponza/chain_texture.tga',
-	'normalmap' 	: 'levels/sponza/chain_texture_bump.png',
-	'alphamap' 		: 'levels/sponza/chain_texture_mask.png',
-	'alphatest'		: 'true'
-}

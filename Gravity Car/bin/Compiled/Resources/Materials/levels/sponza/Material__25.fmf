@@ -1,6 +1,0 @@
-{
-'shader' 		: 'default_lighting',
-'specpower' 		: '10.0000',
-'basetexture' 		: 'textures/lion.tga',
-'normalmap' 		: 'textures/lion_bump.png',
-}

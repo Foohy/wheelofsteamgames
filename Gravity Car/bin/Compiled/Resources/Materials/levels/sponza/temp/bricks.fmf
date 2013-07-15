@@ -1,6 +1,0 @@
-{
-	'shader' 		: 'default_lighting',
-	'Basetexture' 	: 'levels/sponza/spnza_bricks_a_diff.tga',
-	'normalmap' 	: 'levels/sponza/spnza_bricks_a_bump.png',
-	'specmap' 		: 'levels/sponza/spnza_bricks_a_spec.tga',
-}
