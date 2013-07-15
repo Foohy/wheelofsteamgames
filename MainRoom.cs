@@ -527,12 +527,10 @@ namespace WheelOfSteamGames
                     if (Menu.IsShown)
                     {
                         Menu.HideToLeft();
-                        Input.LockMouse = true;
                     }
                     else
                     {
                         Menu.ShowToLeft();
-                        Input.LockMouse = false;
                     }
                 }
             }

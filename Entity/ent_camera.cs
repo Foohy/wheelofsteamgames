@@ -20,6 +20,16 @@ namespace WheelOfSteamGames.Entity
         {
             this.ShouldDraw = false; //Don't draw the player entity itself
 
+            Utilities.window.Keyboard.KeyDown += new EventHandler<KeyboardKeyEventArgs>(Keyboard_KeyDown);
+        }
+
+        void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
+        {
+            if (e.Key == Key.F12)
+            {
+                this.Locked = !this.Locked;
+                Input.LockMouse = !this.Locked; 
+            }
         }
 
         public override void Think()
@@ -38,8 +48,6 @@ namespace WheelOfSteamGames.Entity
                 multiplier = 20;
 
             Vector3 NewPos = this.Position;
-
-            if (window.Keyboard[Key.F12]) this.Locked = false;
 
             if (!Locked && Input.LockMouse)
             {
