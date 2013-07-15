@@ -22,6 +22,9 @@ namespace WheelOfSteamGames.Entity
         public const double TextRemainTime = 8.0f;
         public const double TextFadeTime = 2.0f;
 
+        private const double ButtonUpdateRate = 0.5f; //How often to update the position of the invisible buttons on the screen
+        private double NextButtonUpdate = 0;
+
         private List<App> AppLines = new List<App>();
         private Line CurLine;
         private int CurLineIndex= 0;
@@ -36,6 +39,10 @@ namespace WheelOfSteamGames.Entity
         private Mesh TextDisplayMesh;
         private Material TextMat;
         private Vector3 TextDisplayOffset = new Vector3(-5, 16, 0);
+
+        //Buttons
+        private Button PrevButton;
+        private Button NextButton;
 
         private double TextEndTime = 0;
         private double TextEndFadeTime = 0;
@@ -70,15 +77,71 @@ namespace WheelOfSteamGames.Entity
             Line2D3DMatrix = Matrix4.CreateOrthographicOffCenter(0, LineBubbleRes, 0, LineBubbleRes, Utilities.NearClip, Utilities.FarClip);
 
             TextMat = new Material(SpeechFBO.RenderTexture, Resource.GetProgram("default"));
-            //TextMat.Properties.AlphaTest = true;
-            //TextMat.Properties.NoCull = true;
             
             //Mesh to display the text
             TextDisplayMesh = EngineResources.CreateNewQuadMesh();
             TextDisplayMesh.mat = TextMat;
 
+            //Some buttons to butt in HEH
+            PrevButton = GUIManager.Create<Button>();
+            PrevButton.ShouldDraw = false;
+            PrevButton.SetEnabled(false);
+            PrevButton.OnButtonPress += new Button.OnButtonPressDel(PrevButton_OnButtonPress);
+
+            NextButton = GUIManager.Create<Button>();
+            NextButton.ShouldDraw = false;
+            NextButton.SetEnabled(false);
+            NextButton.OnButtonPress += new Button.OnButtonPressDel(NextButton_OnButtonPress);
+
             EntManager.OnPostDrawTranslucentEntities += new Action(EntManager_OnPostDrawTranslucentEntities);
             GUIManager.PostDrawHUD += new GUIManager.OnDrawHUD(GUIManager_PostDrawHUD);
+        }
+
+        void NextButton_OnButtonPress(Panel sender)
+        {
+            this.SayNextPage();
+        }
+
+        void PrevButton_OnButtonPress(Panel sender)
+        {
+            this.SayPreviousPage();
+        }
+
+        public override void Think()
+        {
+            base.Think();
+
+            //Place the buttons
+            if (Utilities.Time > NextButtonUpdate)
+            {
+                NextButtonUpdate += ButtonUpdateRate;
+
+
+                //Handle pressing the directional buttons with the mouse
+                Vector3 Up;
+                Vector3 Forward = this.Angles.Forward();
+                Vector3 Right;
+                this.Angles.AngleVectors(out Forward, out Up, out Right);
+
+                //Get the world position of the buttons
+                Vector3 worldPosLeft = new Vector3(Forward.X * (LeftArrowPos.X / LineBubbleRes) * MeshScale, -Up.Y * (LeftArrowPos.Y / LineBubbleRes) * MeshScale, -Forward.Z * (LeftArrowPos.X / LineBubbleRes) * MeshScale) + this.Position + TextDisplayOffset;
+                Vector3 worldPosRight = new Vector3(Forward.X * (RightArrowPos.X / LineBubbleRes) * MeshScale, -Up.Y * (RightArrowPos.Y / LineBubbleRes) * MeshScale, -Forward.Z * (RightArrowPos.X / LineBubbleRes) * MeshScale) + this.Position + TextDisplayOffset;
+                Vector3 worldPosBottomRight = new Vector3(worldPosLeft + new Vector3((25f / 256) * MeshScale, -(25f / 256) * MeshScale, 0) + worldPosOffset * 2);
+
+                Vector2 scrLeft = Utilities.Get3Dto2D(worldPosLeft - worldPosOffset);
+                Vector2 scrRight = Utilities.Get3Dto2D(worldPosRight - worldPosOffset);
+                Vector2 scrBot = Utilities.Get3Dto2D(worldPosBottomRight - worldPosOffset);
+
+                PrevButton.SetPos(scrLeft);
+                PrevButton.SetWidthHeight((scrBot - scrLeft).X, (scrBot - scrLeft).Y);
+
+                NextButton.SetPos(scrRight);
+                NextButton.SetWidthHeight((scrBot - scrLeft).X, (scrBot - scrLeft).Y);
+
+                bool bEnabled = TextEndFadeTime > Utilities.Time;
+                PrevButton.SetEnabled(bEnabled && this.HasPreviousPage());
+                NextButton.SetEnabled(bEnabled && this.HasNextPage());
+            }
         }
 
         /// <summary>
@@ -99,23 +162,10 @@ namespace WheelOfSteamGames.Entity
                 TextDisplayMesh.Draw();
             }
 
-
-            //Handle pressing the directional buttons with the mouse
-            /*
-            Vector3 Up;
-            Vector3 Forward = this.Angles.Forward();
-            Vector3 Right;
-            this.Angles.AngleVectors(out Forward, out Up, out Right);
-
-            //Get the world position of the buttons
-            Vector3 worldPosLeft = new Vector3(Forward.X * (LeftArrowPos.X / LineBubbleRes) * MeshScale, -Up.Y * (LeftArrowPos.Y / LineBubbleRes) * MeshScale, -Forward.Z * (LeftArrowPos.X / LineBubbleRes) * MeshScale) + this.Position + TextDisplayOffset;
-            Vector3 worldPosRight = new Vector3(Forward.X * (RightArrowPos.X / LineBubbleRes) * MeshScale, -Up.Y * (RightArrowPos.Y / LineBubbleRes) * MeshScale, -Forward.Z * (RightArrowPos.X / LineBubbleRes) * MeshScale) + this.Position + TextDisplayOffset;
-
-            Graphics.DrawSphere(worldPosLeft, 0.5f);
-            Graphics.DrawSphere(worldPosRight, 0.5f);
-             * */
+            
         }
 
+        private static Vector3 worldPosOffset = new Vector3(0.25f, -0.25f, 0); //Offset because Get3Dto2D has strange precision errors up close (LOOK INTO THIS)
         void GUIManager_PostDrawHUD(EventArgs e)
         {
             if (this.curString != this.lastString)
