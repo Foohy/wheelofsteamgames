@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WheelOfSteamGames")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Wheel of Video Games")]
+[assembly: AssemblyDescription("A spinning wheel filled to the brim with your steam list of games!")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("WheelOfSteamGames")]
-[assembly: AssemblyCopyright("Copyright Foohy ©  2013")]
+[assembly: AssemblyProduct("Wheel of Video Games")]
+[assembly: AssemblyCopyright("Copyright © pixelTail Games 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
