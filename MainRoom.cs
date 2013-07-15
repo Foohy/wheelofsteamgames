@@ -71,6 +71,7 @@ namespace WheelOfSteamGames
             usernameWindow.SetEnableCloseButton(false);
             usernameWindow.SetPos(Utilities.window.Width / 2 - usernameWindow.Width / 2, Utilities.window.Height / 2 - usernameWindow.Height / 2);
             usernameWindow.MinimumSize = new Vector2(289, 115);
+            usernameWindow.OnRemove += new Action<Panel>(usernameWindow_OnRemove);
 
             #region Connection panel (For accessing an account over the internet)
             //Create a panel that will hold all of the connect online related things
@@ -78,7 +79,6 @@ namespace WheelOfSteamGames
             connectPanel.DockPadding(2, 2, 2, 2);
             connectPanel.Dock(Panel.DockStyle.FILL);
             connectPanel.ShouldDraw = false;
-            //connectPanel.ShouldDrawChildren = true;
             connectPanel.Name = "panel_connect";
 
 
@@ -86,6 +86,7 @@ namespace WheelOfSteamGames
             questionText.Autosize = true;
             questionText.SetText("Please enter your community URL");
             questionText.SetPos(15, 10);
+
             /*
             Label exampleText = GUIManager.Create<Label>(connectPanel);
             exampleText.Autosize = true;
@@ -98,6 +99,7 @@ namespace WheelOfSteamGames
             exampleTextImportant.SetText("YOURNAMEHERE");
             exampleTextImportant.SetPos(exampleText.Width + exampleText.Position.X, exampleText.Position.Y);
             */
+
             TextInput input = GUIManager.Create<TextInput>(connectPanel);
             input.SetAnchorStyle(Panel.Anchors.Left | Panel.Anchors.Top | Panel.Anchors.Right);
             input.SetPos(new Vector2(20, questionText.Position.Y + 20));
@@ -129,6 +131,8 @@ namespace WheelOfSteamGames
             progressText.SetAnchorStyle(Panel.Anchors.Left | Panel.Anchors.Top | Panel.Anchors.Right);
             progressText.SetColor(255, 0, 0);
             progressText.Name = "progress_text";
+
+            usernameWindow.SetEnabled(true, true);
             #endregion
 
             #region Local Saves panel (For using pre-existing saves of games)
@@ -139,7 +143,7 @@ namespace WheelOfSteamGames
             savesPanel.Dock(Panel.DockStyle.FILL);
             savesPanel.ShouldDraw = false;
             savesPanel.ShouldDrawChildren = false;
-            savesPanel.Enabled = false;
+            savesPanel.SetEnabled(false);
             savesPanel.Name = "panel_saves";
 
 
@@ -187,9 +191,16 @@ namespace WheelOfSteamGames
             progressText.SetColor(255, 0, 0);
             progressText.Name = "progress_text";
 
+            savesPanel.SetEnabled(false, true);
             #endregion
 
             return usernameWindow;
+        }
+
+        static void usernameWindow_OnRemove(Panel obj)
+        {
+            usernameWindow.OnRemove -= new Action<Panel>(usernameWindow_OnRemove);
+            usernameWindow = null;
         }
 
         static void acceptSavesBtn_OnButtonPress(Panel sender)
