@@ -94,7 +94,7 @@ namespace WheelOfSteamGames.Entity
 
             if (IsMouseDown)
             {
-                if (GrabApproachSpeed > 2.0)
+                if (Math.Abs(GrabApproachSpeed) > 1.5)
                 {
                     this.CurrentSpeed = GrabApproachSpeed * Utilities.F_DEG2RAD;
                     this.IsSpinning = true;
