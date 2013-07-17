@@ -11,8 +11,8 @@ uniform sampler2D sampler;
 uniform vec3 _color = vec3( 1.0, 1.0, 1.0);
 uniform float gAlpha = 1.0;
 
-out vec4 gl_FragColor;
+out vec4 ex_FragColor;
 void main()
 {
-	gl_FragColor = texture2D( sampler, ex_UV.st) * vec4(_color, gAlpha );
+	ex_FragColor = texture2D( sampler, ex_UV.st) * vec4(_color, gAlpha );
 }

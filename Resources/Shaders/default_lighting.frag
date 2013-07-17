@@ -13,7 +13,7 @@ in vec3 ex_Tangent;
 
 in vec3 WorldPos0;  
 
-out vec4 gl_FragColor;
+out vec4 ex_FragColor;
 
 struct BaseLight
 {
@@ -277,5 +277,5 @@ void main()
 		TotalLight += CalcShadowSpotLight(gShadowCasters[i], Normal, ex_LightSpacePos );
 	}
 
-	gl_FragColor = vec4(texture2D( sampler, ex_UV.st).rgb, gAlpha * texture2D( sampler, ex_UV.st).a * texture(sampler_alpha, ex_UV.st) ) * vec4(_color * TotalLight.rgb, 1.0 );
+	ex_FragColor = vec4(texture2D( sampler, ex_UV.st).rgb, gAlpha * texture2D( sampler, ex_UV.st).a * texture(sampler_alpha, ex_UV.st) ) * vec4(_color * TotalLight.rgb, 1.0 );
 }

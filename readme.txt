@@ -1,6 +1,6 @@
 ﻿=========== WHEEL OF VIDEO GAMES ============
 FOOHY AND SUNABOUZU MADE THIS
-http://www.pixeltailgames.com/wheel/
+http://www.pixeltailgames.com/steamwheel/
 https://github.com/Foohy/wheelofsteamgames
 http://foohy.net
 =============================================
