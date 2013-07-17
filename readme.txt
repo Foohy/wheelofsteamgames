@@ -6,7 +6,7 @@ http://foohy.net
 =============================================
 
 0) System Requirements
-	This requires .Net runtime 4.0 and OpenGL 3.2 (or above)
+	This requires .Net runtime 3.5 and OpenGL 3.2 (or above)
 	Some RAM and a CPU won't hurt either
 
 
