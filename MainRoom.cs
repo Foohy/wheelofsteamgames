@@ -205,6 +205,8 @@ namespace WheelOfSteamGames
 
         static void acceptSavesBtn_OnButtonPress(Panel sender)
         {
+            if (IsLoadingData) return;
+
             ListView listView = sender.Parent.GetChildByName("list_saves") as ListView;
             if (!listView) { Utilities.Print("Could not get list view panel!"); return; }
             ListViewItem item = listView.SelectedPanel;
@@ -222,7 +224,6 @@ namespace WheelOfSteamGames
             }
 
             GenericLoadCommunityID(communityname, communityid);
-            //BeginLoadData(communityname, communityid );
         }
 
         private const float LoadingSize = 30f;
@@ -263,6 +264,8 @@ namespace WheelOfSteamGames
         delegate bool loadIsValidDel(string name, out string failReason, out bool outOfDate);
         static void acceptBtn_OnButtonPress(Panel sender)
         {
+            if (IsLoadingData) return;
+
             string username = "";
             TextInput input = sender.Parent.GetChildByName("community_input") as TextInput;
             if (input)
