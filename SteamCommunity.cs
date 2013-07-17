@@ -554,23 +554,31 @@ namespace WheelOfSteamGames
         private static void SaveGames( List<Game> Games)
         {
             string json = JsonConvert.SerializeObject(Games);
+            string filename = string.Format("{0}{1} {2}", SavesFolder, CommunityID, CleanFileName(SteamName));
 
-            //If a save exists with the same communityid but different name, delete it
+            //Delete the save file if it exists
             var saves = GetLocalSaves();
             foreach (var save in saves)
             {
-                if (save.Key == CommunityID && save.Value != SteamName)
+                string saveFileName = string.Format("{0}{1} {2}", SavesFolder, save.Key, save.Value);
+
+                if (saveFileName == filename)
                 {
                     try
                     {
-                        File.Delete(string.Format("{0}{1} {2}", SavesFolder, save.Key, save.Value));
+                        File.Delete(saveFileName);
                     }
                     catch (Exception) { }
                 }
             }
 
             if (!Directory.Exists(SavesFolder)) Directory.CreateDirectory(SavesFolder);
-            File.WriteAllText( string.Format("{0}{1} {2}",SavesFolder, CommunityID, SteamName), json);
+            File.WriteAllText(filename, json);
+        }
+
+        private static string CleanFileName(string fileName)
+        {
+            return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
         }
 
         private static void ParsegamesList(XmlReader reader)
